@@ -51,11 +51,39 @@
                 <button onclick="showPage('collection')" class="px-12 py-4 border border-white hover:bg-white hover:text-black transition-all uppercase tracking-widest text-xs">View Collection</button>
             </div>
         </div>
+
+        <div class="py-20 px-6 bg-white border-t border-gray-50">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-3xl md:text-4xl mb-6 brand-font text-[#D4AF37]">Our Story</h2>
+                <div class="w-16 h-[1px] bg-[#D4AF37] mx-auto mb-10"></div>
+                
+                <div class="space-y-6 text-gray-600 leading-relaxed font-light">
+                    <p>
+                        Welcome to <span class="font-semibold text-gray-800">Shree Siddh Kala Alankar</span>, where we breathe life into the timeless traditions of Maharashtrian heritage. Based in the historic city of **Nashik**, we specialize in the meticulous creation of 100% handcrafted jewelry that captures the royal essence of our culture.
+                    </p>
+                    <p>
+                        Founded and curated by **Sheetal Gadekar**, our collection is more than just ornament—it is a tribute to the craftsmanship passed down through generations. From the intricate detail of a Peshwai Nath to the graceful strength of a Mangalsutra, every piece is crafted with passion, precision, and the finest materials.
+                    </p>
+                    
+                    <div class="pt-10 grid md:grid-cols-2 gap-8 text-sm">
+                        <div class="p-6 bg-[#FCFBF4] rounded-lg">
+                            <h4 class="font-bold text-[#D4AF37] mb-2 uppercase tracking-widest">Visit Our Studio</h4>
+                            <p>Nashik, Maharashtra, India</p>
+                        </div>
+                        <div class="p-6 bg-[#FCFBF4] rounded-lg">
+                            <h4 class="font-bold text-[#D4AF37] mb-2 uppercase tracking-widest">Connect With Us</h4>
+                            <p>Call or WhatsApp:</p>
+                            <p class="font-semibold text-gray-800">+91 8208059509 | +91 8208069292</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <section id="page-collection" class="content-section hidden-section py-20 px-6 max-w-7xl mx-auto">
         <div class="text-center mb-8">
-            <h2 class="text-4xl mb-2 gold-text">Our Masterpieces</h2>
+            <h2 class="text-4xl mb-2 gold-text brand-font">Our Masterpieces</h2>
             <div class="w-24 h-[1px] bg-[#D4AF37] mx-auto mb-8"></div>
         </div>
 
@@ -79,7 +107,7 @@
 
     <section id="page-admin" class="content-section hidden-section py-20 px-6">
         <div class="max-w-xl mx-auto bg-white p-10 shadow-2xl rounded-lg border-t-4 border-[#D4AF37]">
-            <h2 class="text-2xl mb-8 text-center gold-text font-bold">Admin Dashboard</h2>
+            <h2 class="text-2xl mb-8 text-center brand-font font-bold text-[#D4AF37]">Admin Dashboard</h2>
             <div class="space-y-4">
                 <div>
                     <label class="text-[10px] uppercase font-bold text-gray-400 ml-1">Product Name</label>
@@ -150,12 +178,12 @@
         let currentFilter = 'All';
 
         const firebaseConfig = {
-          apiKey: "AIzaSyAf9oBIC7SlWFR2467xHBh3iQ2Mdejua-8",
-          authDomain: "shreesiddhkala-d393c.firebaseapp.com",
-          projectId: "shreesiddhkala-d393c",
-          storageBucket: "shreesiddhkala-d393c.firebasestorage.app",
-          messagingSenderId: "453855024328",
-          appId: "1:453855024328:web:d5ab9bae2de6c8a7fe01fd"
+            apiKey: "AIzaSyAf9oBIC7SlWFR2467xHBh3iQ2Mdejua-8",
+            authDomain: "shreesiddhkala-d393c.firebaseapp.com",
+            projectId: "shreesiddhkala-d393c",
+            storageBucket: "shreesiddhkala-d393c.firebasestorage.app",
+            messagingSenderId: "453855024328",
+            appId: "1:453855024328:web:d5ab9bae2de6c8a7fe01fd"
         };
 
         firebase.initializeApp(firebaseConfig);
@@ -170,15 +198,24 @@
         }
 
         function checkAdmin() {
-            if(isAdminLoggedIn) { showPage('admin'); } 
-            else {
+            if(isAdminLoggedIn) { 
+                showPage('admin'); 
+            } else {
                 const pass = prompt("Enter Admin Password:");
-                if(pass === ADMIN_PASSWORD) { isAdminLoggedIn = true; showPage('admin'); renderProducts(); }
+                if(pass === ADMIN_PASSWORD) { 
+                    isAdminLoggedIn = true; 
+                    showPage('admin'); 
+                    renderProducts(); 
+                }
                 else if(pass !== null) alert("Incorrect Password!");
             }
         }
 
-        function logoutAdmin() { isAdminLoggedIn = false; showPage('home'); renderProducts(); }
+        function logoutAdmin() { 
+            isAdminLoggedIn = false; 
+            showPage('home'); 
+            renderProducts(); 
+        }
 
         function filterCategory(cat, el) {
             currentFilter = cat;
@@ -196,7 +233,8 @@
             const btn = document.getElementById('uploadBtn');
 
             if(!name || !category || !price || !file) return alert("Please fill all details and select a category.");
-            btn.innerText = "UPLOADING..."; btn.disabled = true;
+            btn.innerText = "UPLOADING..."; 
+            btn.disabled = true;
 
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -207,14 +245,21 @@
                     });
                     alert("Jewelry added to collection!");
                     location.reload();
-                } catch (e) { alert(e.message); btn.innerText = "SAVE PRODUCT"; btn.disabled = false; }
+                } catch (e) { 
+                    alert(e.message); 
+                    btn.innerText = "SAVE PRODUCT"; 
+                    btn.disabled = false; 
+                }
             };
         }
 
         function renderProducts() {
             db.collection('products').orderBy('createdAt', 'desc').onSnapshot(snap => {
                 const grid = document.getElementById('productGrid');
-                if(snap.empty) { grid.innerHTML = '<p class="col-span-full text-center py-20 text-gray-400">No jewelry items found.</p>'; return; }
+                if(snap.empty) { 
+                    grid.innerHTML = '<p class="col-span-full text-center py-20 text-gray-400">No jewelry items found.</p>'; 
+                    return; 
+                }
                 
                 let filteredDocs = snap.docs;
                 if(currentFilter !== 'All') {
@@ -228,7 +273,6 @@
 
                 grid.innerHTML = filteredDocs.map(doc => {
                     const p = doc.data();
-                    // Clean description for single quotes to avoid breaking the onclick string
                     const cleanDesc = (p.desc || "").replace(/'/g, "\\'");
                     return `
                         <div class="product-card p-4 cursor-pointer" onclick="openModal('${doc.id}', '${p.name}', '${p.price}', '${cleanDesc}', '${p.image}', '${p.category}')">
@@ -246,7 +290,7 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const productId = urlParams.get('id');
                 if (productId && !document.getElementById('productModal').classList.contains('hidden')) {
-                    // prevent infinite loop
+                    // prevent reload loop
                 } else if (productId) {
                     const doc = snap.docs.find(d => d.id === productId);
                     if (doc) {
@@ -258,7 +302,9 @@
         }
 
         async function deleteProduct(id) {
-            if(confirm("Permanently delete this item from your website?")) await db.collection('products').doc(id).delete();
+            if(confirm("Permanently delete this item from your website?")) {
+                await db.collection('products').doc(id).delete();
+            }
         }
 
         function openModal(id, name, price, desc, img, cat, updateUrl = true) {
@@ -273,6 +319,7 @@
             if(updateUrl) window.history.pushState({}, '', productLink);
 
             const msg = encodeURIComponent(`Namaste Shree Siddh Kala Alankar! \n\nI saw this piece on your website and would like to know more: \n\n*Item:* ${name}\n*Category:* ${cat}\n*Price:* ₹${price}\n\nLink: ${productLink}`);
+            
             document.getElementById('whatsappBtn').onclick = () => {
                 window.open(`https://wa.me/918208059509?text=${msg}`, '_blank');
             };
