@@ -18,7 +18,7 @@
         .nav-link { cursor: pointer; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em; transition: 0.3s; }
         .nav-link:hover, .active-tab { color: var(--gold); border-bottom: 1px solid var(--gold); }
         .hidden-section { display: none; }
-        .product-card { transition: 0.4s; border: 1px solid transparent; background: white; }
+        .product-card { transition: 0.4s; border: 1px solid transparent; background: white; border-radius: 8px; overflow: hidden; }
         .product-card:hover { border-color: var(--gold); transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
     </style>
 </head>
@@ -33,7 +33,7 @@
             <div class="flex space-x-8">
                 <span onclick="showPage('home')" id="link-home" class="nav-link active-tab">Home</span>
                 <span onclick="showPage('collection')" id="link-collection" class="nav-link">Collection</span>
-                <span onclick="showPage('admin')" id="link-admin" class="nav-link text-gray-400">Admin</span>
+                <span onclick="showPage('admin')" id="link-admin" class="nav-link text-gray-300">Admin</span>
             </div>
         </div>
     </nav>
@@ -55,30 +55,29 @@
             <h2 class="text-4xl mb-2 gold-text">Our Masterpieces</h2>
             <div class="w-24 h-[1px] bg-[#D4AF37] mx-auto mb-4"></div>
         </div>
-        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            </div>
+        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"></div>
     </section>
 
     <section id="page-admin" class="content-section hidden-section py-20 px-6">
         <div class="max-w-xl mx-auto bg-white p-10 shadow-2xl rounded-lg">
-            <h2 class="text-2xl mb-8 text-center gold-text">Admin Panel</h2>
+            <h2 class="text-2xl mb-8 text-center gold-text">Add New Product</h2>
             <div class="space-y-4">
-                <input type="text" id="pName" placeholder="Jewelry Name" class="w-full p-4 border rounded focus:ring-1 focus:ring-gold-500">
+                <input type="text" id="pName" placeholder="Jewelry Name" class="w-full p-4 border rounded">
                 <input type="number" id="pPrice" placeholder="Price (₹)" class="w-full p-4 border rounded">
-                <textarea id="pDesc" placeholder="Product Description..." class="w-full p-4 border rounded h-24"></textarea>
+                <textarea id="pDesc" placeholder="Description..." class="w-full p-4 border rounded h-24"></textarea>
                 <div class="border p-4 rounded bg-gray-50">
-                    <p class="text-xs text-gray-500 mb-2 font-bold">Upload Photo (Keep under 1MB for speed)</p>
+                    <p class="text-xs text-gray-500 mb-2">Upload Photo (Keep under 1MB)</p>
                     <input type="file" id="pImage" accept="image/*" class="text-xs">
                 </div>
-                <button onclick="uploadToFirebase()" id="uploadBtn" class="w-full gold-gradient text-white py-4 font-bold tracking-widest rounded hover:opacity-90">SAVE TO CLOUD</button>
+                <button onclick="uploadToFirebase()" id="uploadBtn" class="w-full gold-gradient text-white py-4 font-bold tracking-widest rounded">SAVE TO CLOUD</button>
             </div>
         </div>
     </section>
 
     <div id="productModal" class="hidden fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4">
         <div class="bg-white max-w-5xl w-full flex flex-col md:flex-row overflow-hidden rounded-sm relative max-h-[90vh] overflow-y-auto">
-            <button onclick="closeModal()" class="absolute top-5 right-5 text-3xl hover:text-[#D4AF37]">&times;</button>
-            <div class="md:w-1/2 bg-gray-50 h-[300px] md:h-auto">
+            <button onclick="closeModal()" class="absolute top-5 right-5 text-3xl hover:text-[#D4AF37] z-50">&times;</button>
+            <div class="md:w-1/2 bg-gray-50 h-[300px] md:auto">
                 <img id="modalImg" src="" class="w-full h-full object-contain p-4">
             </div>
             <div class="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
@@ -86,7 +85,7 @@
                 <p id="modalPrice" class="text-2xl text-[#D4AF37] mb-6"></p>
                 <div class="w-12 h-[1px] bg-gray-300 mb-6"></div>
                 <p id="modalDesc" class="text-gray-500 leading-relaxed mb-8 font-light"></p>
-                <button id="whatsappBtn" class="w-full bg-[#25D366] text-white py-4 rounded-full font-bold flex items-center justify-center gap-3 hover:scale-105 transition-transform">
+                <button id="whatsappBtn" class="w-full bg-[#25D366] text-white py-4 rounded-full font-bold flex items-center justify-center gap-3">
                     Inquire on WhatsApp
                 </button>
             </div>
@@ -94,7 +93,6 @@
     </div>
 
     <script>
-        // --- YOUR FIREBASE CONFIG ---
         const firebaseConfig = {
           apiKey: "AIzaSyAf9oBIC7SlWFR2467xHBh3iQ2Mdejua-8",
           authDomain: "shreesiddhkala-d393c.firebaseapp.com",
@@ -122,46 +120,36 @@
             const file = document.getElementById('pImage').files[0];
             const btn = document.getElementById('uploadBtn');
 
-            if(!name || !price || !file) return alert("Please fill all details and pick a photo.");
-
-            btn.innerText = "SAVING...";
-            btn.disabled = true;
+            if(!name || !price || !file) return alert("Please fill all details.");
+            btn.innerText = "SAVING..."; btn.disabled = true;
 
             const reader = new FileReader();
-            reader.readAsDataURL(file); // Converts image to text for Option B
+            reader.readAsDataURL(file);
             reader.onload = async function() {
                 try {
-                    const imageData = reader.result;
                     await db.collection('products').add({
-                        name, price, desc, image: imageData, createdAt: Date.now()
+                        name, price, desc, image: reader.result, createdAt: Date.now()
                     });
-                    alert("Jewelry added successfully!");
+                    alert("Added successfully!");
                     location.reload();
-                } catch (e) {
-                    alert("Error: " + e.message);
-                    btn.innerText = "SAVE TO CLOUD";
-                    btn.disabled = false;
-                }
+                } catch (e) { alert(e.message); btn.innerText = "SAVE TO CLOUD"; btn.disabled = false; }
             };
         }
 
         function renderProducts() {
             db.collection('products').orderBy('createdAt', 'desc').onSnapshot(snap => {
                 const grid = document.getElementById('productGrid');
-                if(snap.empty) {
-                    grid.innerHTML = '<p class="col-span-full text-center py-20 text-gray-400">Your collection is empty. Add items from Admin.</p>';
-                    return;
-                }
+                if(snap.empty) { grid.innerHTML = '<p class="col-span-full text-center py-20 text-gray-400">No items yet.</p>'; return; }
                 grid.innerHTML = snap.docs.map(doc => {
                     const p = doc.data();
                     return `
                         <div class="product-card p-4 cursor-pointer" onclick="openModal('${doc.id}', '${p.name}', '${p.price}', \`${p.desc}\`, '${p.image}')">
-                            <div class="h-64 overflow-hidden mb-4 bg-gray-50">
+                            <div class="h-64 overflow-hidden mb-4 bg-gray-50 rounded">
                                 <img src="${p.image}" class="w-full h-full object-cover">
                             </div>
                             <h4 class="brand-font text-lg text-center font-bold">${p.name}</h4>
                             <p class="text-center text-[#D4AF37]">₹${p.price}</p>
-                            <button onclick="event.stopPropagation(); deleteProduct('${doc.id}')" class="w-full mt-4 text-[9px] uppercase text-red-300 hover:text-red-500 tracking-tighter">Remove</button>
+                            <button onclick="event.stopPropagation(); deleteProduct('${doc.id}')" class="w-full mt-4 text-[10px] text-red-300 uppercase">Remove</button>
                         </div>
                     `;
                 }).join('');
@@ -169,9 +157,7 @@
         }
 
         async function deleteProduct(id) {
-            if(confirm("Delete this piece from catalog?")) {
-                await db.collection('products').doc(id).delete();
-            }
+            if(confirm("Delete this item?")) await db.collection('products').doc(id).delete();
         }
 
         function openModal(id, name, price, desc, img) {
@@ -180,7 +166,10 @@
             document.getElementById('modalPrice').innerText = '₹' + price;
             document.getElementById('modalDesc').innerText = desc;
             
-            const msg = encodeURIComponent(`Namaste Shree Siddh Kala Alankar! \n\nI am interested in this piece: \n*Item:* ${name}\n*Price:* ₹${price}\n\nCan you tell me more?`);
+            // AUTOMATIC WEBSITE LINK FOR WHATSAPP
+            const siteUrl = window.location.origin; 
+            const msg = encodeURIComponent(`Namaste Shree Siddh Kala Alankar! \n\nI am interested in this piece: \n*Item:* ${name}\n*Price:* ₹${price}\n\nView it on the website: ${siteUrl}`);
+            
             document.getElementById('whatsappBtn').onclick = () => {
                 window.open(`https://wa.me/918208059509?text=${msg}`, '_blank');
             };
