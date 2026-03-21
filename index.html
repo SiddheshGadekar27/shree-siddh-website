@@ -33,7 +33,7 @@
             <div class="flex space-x-8">
                 <span onclick="showPage('home')" id="link-home" class="nav-link active-tab">Home</span>
                 <span onclick="showPage('collection')" id="link-collection" class="nav-link">Collection</span>
-                <span onclick="showPage('admin')" id="link-admin" class="nav-link text-gray-300">Admin</span>
+                <span onclick="checkAdmin()" id="link-admin" class="nav-link text-gray-300">Admin</span>
             </div>
         </div>
     </nav>
@@ -70,6 +70,7 @@
                     <input type="file" id="pImage" accept="image/*" class="text-xs">
                 </div>
                 <button onclick="uploadToFirebase()" id="uploadBtn" class="w-full gold-gradient text-white py-4 font-bold tracking-widest rounded">SAVE TO CLOUD</button>
+                <button onclick="logoutAdmin()" class="w-full text-xs text-gray-400 mt-4 underline">Logout from Admin</button>
             </div>
         </div>
     </section>
@@ -93,6 +94,10 @@
     </div>
 
     <script>
+        // CONFIG
+        const ADMIN_PASSWORD = "nashik123"; 
+        let isAdminLoggedIn = false;
+
         const firebaseConfig = {
           apiKey: "AIzaSyAf9oBIC7SlWFR2467xHBh3iQ2Mdejua-8",
           authDomain: "shreesiddhkala-d393c.firebaseapp.com",
@@ -111,6 +116,25 @@
             document.getElementById('page-'+id).classList.remove('hidden-section');
             document.getElementById('link-'+id).classList.add('active-tab');
             window.scrollTo(0,0);
+        }
+
+        function checkAdmin() {
+            if(isAdminLoggedIn) {
+                showPage('admin');
+            } else {
+                const pass = prompt("Enter Admin Password to access dashboard:");
+                if(pass === ADMIN_PASSWORD) {
+                    isAdminLoggedIn = true;
+                    showPage('admin');
+                } else if(pass !== null) {
+                    alert("Incorrect Password!");
+                }
+            }
+        }
+
+        function logoutAdmin() {
+            isAdminLoggedIn = false;
+            showPage('home');
         }
 
         function uploadToFirebase() {
@@ -149,7 +173,7 @@
                             </div>
                             <h4 class="brand-font text-lg text-center font-bold">${p.name}</h4>
                             <p class="text-center text-[#D4AF37]">₹${p.price}</p>
-                            <button onclick="event.stopPropagation(); deleteProduct('${doc.id}')" class="w-full mt-4 text-[10px] text-red-300 uppercase">Remove</button>
+                            ${isAdminLoggedIn ? `<button onclick="event.stopPropagation(); deleteProduct('${doc.id}')" class="w-full mt-4 text-[10px] text-red-300 uppercase">Remove</button>` : ''}
                         </div>
                     `;
                 }).join('');
@@ -157,7 +181,7 @@
         }
 
         async function deleteProduct(id) {
-            if(confirm("Delete this item?")) await db.collection('products').doc(id).delete();
+            if(confirm("Delete this item from catalog?")) await db.collection('products').doc(id).delete();
         }
 
         function openModal(id, name, price, desc, img) {
@@ -166,7 +190,6 @@
             document.getElementById('modalPrice').innerText = '₹' + price;
             document.getElementById('modalDesc').innerText = desc;
             
-            // AUTOMATIC WEBSITE LINK FOR WHATSAPP
             const siteUrl = window.location.origin; 
             const msg = encodeURIComponent(`Namaste Shree Siddh Kala Alankar! \n\nI am interested in this piece: \n*Item:* ${name}\n*Price:* ₹${price}\n\nView it on the website: ${siteUrl}`);
             
