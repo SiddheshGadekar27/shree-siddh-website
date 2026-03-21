@@ -43,8 +43,8 @@
 
     <section id="page-home" class="content-section">
         <div class="relative h-[80vh] flex items-center justify-center overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1621425442003-d6676356064d?auto=format&fit=crop&q=80" class="absolute inset-0 w-full h-full object-cover">
-            <div class="absolute inset-0 bg-black/50"></div>
+            <img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&q=80&w=1920" class="absolute inset-0 w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/40"></div>
             <div class="relative z-10 text-center text-white px-6">
                 <h2 class="text-5xl md:text-7xl mb-4 font-light">The Golden Heritage</h2>
                 <p class="text-lg md:text-xl tracking-widest font-light mb-8">Authentic Handcrafted Maharashtrian Jewelry</p>
@@ -84,21 +84,21 @@
             
             <div class="space-y-6 text-gray-600 leading-relaxed font-light">
                 <p>
-                    Welcome to <span class="font-semibold text-gray-800">Shree Siddh Kala Alankar</span>, where we breathe life into the timeless traditions of Maharashtrian heritage. Based in the historic city of Nashik, we specialize in the meticulous creation of 100% handcrafted jewelry that captures the royal essence of our culture.
+                    Welcome to <span class="font-semibold text-gray-800">Shree Siddh Kala Alankar</span>, where we breathe life into the timeless traditions of Maharashtrian heritage. Based in the historic city of **Nashik**, we specialize in the meticulous creation of 100% handcrafted jewelry that captures the royal essence of our culture.
                 </p>
                 <p>
-                    Founded and curated by Sheetal Gadekar and managed by Siddhesh Gadekar, our collection is more than just ornament—it is a tribute to the craftsmanship passed down through generations. From the intricate detail of a Peshwai Nath to the graceful strength of a Mangalsutra, every piece is crafted with passion, precision, and the finest materials.
+                    Founded and curated by **Sheetal Gadekar**, our collection is more than just ornament—it is a tribute to the craftsmanship passed down through generations. From the intricate detail of a Peshwai Nath to the graceful strength of a Mangalsutra, every piece is crafted with passion, precision, and the finest materials.
                 </p>
                 
-                <div class="pt-10 grid md:grid-cols-2 gap-8 text-sm">
+                <div class="pt-10 grid md:grid-cols-2 gap-8 text-sm text-left">
                     <div class="p-6 bg-[#FCFBF4] rounded-lg border border-gray-100">
-                        <h4 class="font-bold text-[#D4AF37] mb-2 uppercase tracking-widest">Located At</h4>
-                        <p class="text-gray-800 font-medium italic">Nashik, Maharashtra</p>
+                        <h4 class="font-bold text-[#D4AF37] mb-2 uppercase tracking-widest">Visit Our Studio</h4>
+                        <p class="text-gray-800 font-medium">Nashik, Maharashtra, India</p>
                     </div>
                     <div class="p-6 bg-[#FCFBF4] rounded-lg border border-gray-100">
                         <h4 class="font-bold text-[#D4AF37] mb-2 uppercase tracking-widest">Connect With Us</h4>
-                        <p>Call or WhatsApp:</p>
-                        <p class="font-bold text-gray-800 mt-1 tracking-wider">+91 8208059509</p>
+                        <p class="text-gray-500 mb-1">Call or WhatsApp:</p>
+                        <p class="font-bold text-gray-800 tracking-wider">+91 8208059509</p>
                         <p class="font-bold text-gray-800 tracking-wider">+91 8208069292</p>
                     </div>
                 </div>
@@ -297,7 +297,6 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const productId = urlParams.get('id');
                 if (productId && !document.getElementById('productModal').classList.contains('hidden')) {
-                    // prevent loop
                 } else if (productId) {
                     const doc = snap.docs.find(d => d.id === productId);
                     if (doc) {
