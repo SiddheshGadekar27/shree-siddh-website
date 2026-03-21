@@ -94,7 +94,6 @@
     </div>
 
     <script>
-        // CONFIG
         const ADMIN_PASSWORD = "nashik123"; 
         let isAdminLoggedIn = false;
 
@@ -119,23 +118,15 @@
         }
 
         function checkAdmin() {
-            if(isAdminLoggedIn) {
-                showPage('admin');
-            } else {
-                const pass = prompt("Enter Admin Password to access dashboard:");
-                if(pass === ADMIN_PASSWORD) {
-                    isAdminLoggedIn = true;
-                    showPage('admin');
-                } else if(pass !== null) {
-                    alert("Incorrect Password!");
-                }
+            if(isAdminLoggedIn) { showPage('admin'); } 
+            else {
+                const pass = prompt("Enter Admin Password:");
+                if(pass === ADMIN_PASSWORD) { isAdminLoggedIn = true; showPage('admin'); }
+                else if(pass !== null) alert("Incorrect Password!");
             }
         }
 
-        function logoutAdmin() {
-            isAdminLoggedIn = false;
-            showPage('home');
-        }
+        function logoutAdmin() { isAdminLoggedIn = false; showPage('home'); }
 
         function uploadToFirebase() {
             const name = document.getElementById('pName').value;
@@ -151,9 +142,7 @@
             reader.readAsDataURL(file);
             reader.onload = async function() {
                 try {
-                    await db.collection('products').add({
-                        name, price, desc, image: reader.result, createdAt: Date.now()
-                    });
+                    await db.collection('products').add({ name, price, desc, image: reader.result, createdAt: Date.now() });
                     alert("Added successfully!");
                     location.reload();
                 } catch (e) { alert(e.message); btn.innerText = "SAVE TO CLOUD"; btn.disabled = false; }
@@ -177,21 +166,37 @@
                         </div>
                     `;
                 }).join('');
+
+                // Check URL for specific product ID after loading
+                const urlParams = new URLSearchParams(window.location.search);
+                const productId = urlParams.get('id');
+                if (productId) {
+                    const doc = snap.docs.find(d => d.id === productId);
+                    if (doc) {
+                        const p = doc.data();
+                        openModal(doc.id, p.name, p.price, p.desc, p.image, false);
+                    }
+                }
             });
         }
 
         async function deleteProduct(id) {
-            if(confirm("Delete this item from catalog?")) await db.collection('products').doc(id).delete();
+            if(confirm("Delete this item?")) await db.collection('products').doc(id).delete();
         }
 
-        function openModal(id, name, price, desc, img) {
+        function openModal(id, name, price, desc, img, updateUrl = true) {
             document.getElementById('modalImg').src = img;
             document.getElementById('modalName').innerText = name;
             document.getElementById('modalPrice').innerText = '₹' + price;
             document.getElementById('modalDesc').innerText = desc;
             
-            const siteUrl = window.location.origin; 
-            const msg = encodeURIComponent(`Namaste Shree Siddh Kala Alankar! \n\nI am interested in this piece: \n*Item:* ${name}\n*Price:* ₹${price}\n\nView it on the website: ${siteUrl}`);
+            // Generate link with ID
+            const baseUrl = window.location.origin + window.location.pathname;
+            const productLink = `${baseUrl}?id=${id}`;
+            
+            if(updateUrl) window.history.pushState({}, '', productLink);
+
+            const msg = encodeURIComponent(`Namaste! I am interested in this piece: \n*Item:* ${name}\n*Price:* ₹${price}\n\nView it here: ${productLink}`);
             
             document.getElementById('whatsappBtn').onclick = () => {
                 window.open(`https://wa.me/918208059509?text=${msg}`, '_blank');
@@ -204,6 +209,9 @@
         function closeModal() {
             document.getElementById('productModal').classList.add('hidden');
             document.body.style.overflow = 'auto';
+            // Clear ID from URL when closing
+            const baseUrl = window.location.origin + window.location.pathname;
+            window.history.pushState({}, '', baseUrl);
         }
 
         renderProducts();
