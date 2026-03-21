@@ -222,21 +222,23 @@
                 }
 
                 if(filteredDocs.length === 0) {
-                    grid.innerHTML = <p class="col-span-full text-center py-20 text-gray-400">No items in ${currentFilter} yet.</p>;
+                    grid.innerHTML = `<p class="col-span-full text-center py-20 text-gray-400">No items in ${currentFilter} yet.</p>`;
                     return;
                 }
 
                 grid.innerHTML = filteredDocs.map(doc => {
                     const p = doc.data();
+                    // Clean description for single quotes to avoid breaking the onclick string
+                    const cleanDesc = (p.desc || "").replace(/'/g, "\\'");
                     return `
-                        <div class="product-card p-4 cursor-pointer" onclick="openModal('${doc.id}', '${p.name}', '${p.price}', \${p.desc}\, '${p.image}', '${p.category}')">
+                        <div class="product-card p-4 cursor-pointer" onclick="openModal('${doc.id}', '${p.name}', '${p.price}', '${cleanDesc}', '${p.image}', '${p.category}')">
                             <div class="h-64 overflow-hidden mb-4 bg-gray-50 rounded">
                                 <img src="${p.image}" class="w-full h-full object-cover">
                             </div>
                             <div class="text-[9px] text-[#D4AF37] uppercase font-bold tracking-widest mb-1">${p.category}</div>
                             <h4 class="brand-font text-md font-bold text-gray-800">${p.name}</h4>
                             <p class="text-sm font-semibold">₹${p.price}</p>
-                            ${isAdminLoggedIn ? <button onclick="event.stopPropagation(); deleteProduct('${doc.id}')" class="w-full mt-4 py-2 text-[10px] bg-red-50 text-red-500 rounded uppercase font-bold">Remove From Shop</button> : ''}
+                            ${isAdminLoggedIn ? `<button onclick="event.stopPropagation(); deleteProduct('${doc.id}')" class="w-full mt-4 py-2 text-[10px] bg-red-50 text-red-500 rounded uppercase font-bold">Remove From Shop</button>` : ''}
                         </div>
                     `;
                 }).join('');
@@ -267,12 +269,12 @@
             document.getElementById('modalDesc').innerText = desc;
             
             const baseUrl = window.location.origin + window.location.pathname;
-            const productLink = ${baseUrl}?id=${id};
+            const productLink = `${baseUrl}?id=${id}`;
             if(updateUrl) window.history.pushState({}, '', productLink);
 
-            const msg = encodeURIComponent(Namaste Shree Siddh Kala Alankar! \n\nI saw this piece on your website and would like to know more: \n\n*Item:* ${name}\n*Category:* ${cat}\n*Price:* ₹${price}\n\nLink: ${productLink});
+            const msg = encodeURIComponent(`Namaste Shree Siddh Kala Alankar! \n\nI saw this piece on your website and would like to know more: \n\n*Item:* ${name}\n*Category:* ${cat}\n*Price:* ₹${price}\n\nLink: ${productLink}`);
             document.getElementById('whatsappBtn').onclick = () => {
-                window.open(https://wa.me/918208059509?text=${msg}, '_blank');
+                window.open(`https://wa.me/918208059509?text=${msg}`, '_blank');
             };
 
             document.getElementById('productModal').classList.remove('hidden');
