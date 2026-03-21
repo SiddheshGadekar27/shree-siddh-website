@@ -51,34 +51,6 @@
                 <button onclick="showPage('collection')" class="px-12 py-4 border border-white hover:bg-white hover:text-black transition-all uppercase tracking-widest text-xs">View Collection</button>
             </div>
         </div>
-
-        <div class="py-20 px-6 bg-white border-t border-gray-50">
-            <div class="max-w-4xl mx-auto text-center">
-                <h2 class="text-3xl md:text-4xl mb-6 brand-font text-[#D4AF37]">Our Story</h2>
-                <div class="w-16 h-[1px] bg-[#D4AF37] mx-auto mb-10"></div>
-                
-                <div class="space-y-6 text-gray-600 leading-relaxed font-light">
-                    <p>
-                        Welcome to <span class="font-semibold text-gray-800">Shree Siddh Kala Alankar</span>, where we breathe life into the timeless traditions of Maharashtrian heritage. Based in the historic city of **Nashik**, we specialize in the meticulous creation of 100% handcrafted jewelry that captures the royal essence of our culture.
-                    </p>
-                    <p>
-                        Founded and curated by **Sheetal Gadekar**, our collection is more than just ornament—it is a tribute to the craftsmanship passed down through generations. From the intricate detail of a Peshwai Nath to the graceful strength of a Mangalsutra, every piece is crafted with passion, precision, and the finest materials.
-                    </p>
-                    
-                    <div class="pt-10 grid md:grid-cols-2 gap-8 text-sm">
-                        <div class="p-6 bg-[#FCFBF4] rounded-lg">
-                            <h4 class="font-bold text-[#D4AF37] mb-2 uppercase tracking-widest">Visit Our Studio</h4>
-                            <p>Nashik, Maharashtra, India</p>
-                        </div>
-                        <div class="p-6 bg-[#FCFBF4] rounded-lg">
-                            <h4 class="font-bold text-[#D4AF37] mb-2 uppercase tracking-widest">Connect With Us</h4>
-                            <p>Call or WhatsApp:</p>
-                            <p class="font-semibold text-gray-800">+91 8208059509 | +91 8208069292</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </section>
 
     <section id="page-collection" class="content-section hidden-section py-20 px-6 max-w-7xl mx-auto">
@@ -103,6 +75,35 @@
         </div>
 
         <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"></div>
+    </section>
+
+    <section id="about-us" class="py-20 px-6 bg-white border-t border-gray-100 mt-auto">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl mb-6 brand-font text-[#D4AF37]">Our Story</h2>
+            <div class="w-16 h-[1px] bg-[#D4AF37] mx-auto mb-10"></div>
+            
+            <div class="space-y-6 text-gray-600 leading-relaxed font-light">
+                <p>
+                    Welcome to <span class="font-semibold text-gray-800">Shree Siddh Kala Alankar</span>, where we breathe life into the timeless traditions of Maharashtrian heritage. Based in the historic city of **Nashik**, we specialize in the meticulous creation of 100% handcrafted jewelry that captures the royal essence of our culture.
+                </p>
+                <p>
+                    Founded and curated by **Sheetal Gadekar**, our collection is more than just ornament—it is a tribute to the craftsmanship passed down through generations. From the intricate detail of a Peshwai Nath to the graceful strength of a Mangalsutra, every piece is crafted with passion, precision, and the finest materials.
+                </p>
+                
+                <div class="pt-10 grid md:grid-cols-2 gap-8 text-sm">
+                    <div class="p-6 bg-[#FCFBF4] rounded-lg border border-gray-100">
+                        <h4 class="font-bold text-[#D4AF37] mb-2 uppercase tracking-widest">Visit Our Studio</h4>
+                        <p class="text-gray-800 font-medium italic">Nashik, Maharashtra</p>
+                    </div>
+                    <div class="p-6 bg-[#FCFBF4] rounded-lg border border-gray-100">
+                        <h4 class="font-bold text-[#D4AF37] mb-2 uppercase tracking-widest">Connect With Us</h4>
+                        <p>Call or WhatsApp:</p>
+                        <p class="font-bold text-gray-800 mt-1 tracking-wider">+91 8208059509</p>
+                        <p class="font-bold text-gray-800 tracking-wider">+91 8208069292</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <section id="page-admin" class="content-section hidden-section py-20 px-6">
@@ -194,6 +195,12 @@
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-tab'));
             document.getElementById('page-'+id).classList.remove('hidden-section');
             document.getElementById('link-'+id).classList.add('active-tab');
+            
+            // Hide "About Us" when on Admin page to keep it clean
+            const aboutUs = document.getElementById('about-us');
+            if(id === 'admin') aboutUs.style.display = 'none';
+            else aboutUs.style.display = 'block';
+
             window.scrollTo(0,0);
         }
 
@@ -290,7 +297,7 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const productId = urlParams.get('id');
                 if (productId && !document.getElementById('productModal').classList.contains('hidden')) {
-                    // prevent reload loop
+                    // prevent loop
                 } else if (productId) {
                     const doc = snap.docs.find(d => d.id === productId);
                     if (doc) {
@@ -302,7 +309,7 @@
         }
 
         async function deleteProduct(id) {
-            if(confirm("Permanently delete this item from your website?")) {
+            if(confirm("Permanently delete this item?")) {
                 await db.collection('products').doc(id).delete();
             }
         }
