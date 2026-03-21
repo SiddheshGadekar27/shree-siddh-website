@@ -43,7 +43,7 @@
 
     <section id="page-home" class="content-section">
         <div class="relative h-[80vh] flex items-center justify-center overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&q=80&w=1920" class="absolute inset-0 w-full h-full object-cover">
+            <img src="https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&q=80&w=1920" class="absolute inset-0 w-full h-full object-cover">
             <div class="absolute inset-0 bg-black/40"></div>
             <div class="relative z-10 text-center text-white px-6">
                 <h2 class="text-5xl md:text-7xl mb-4 font-light">The Golden Heritage</h2>
@@ -90,12 +90,12 @@
                     Founded and curated by **Sheetal Gadekar**, our collection is more than just ornament—it is a tribute to the craftsmanship passed down through generations. From the intricate detail of a Peshwai Nath to the graceful strength of a Mangalsutra, every piece is crafted with passion, precision, and the finest materials.
                 </p>
                 
-                <div class="pt-10 grid md:grid-cols-2 gap-8 text-sm text-left">
-                    <div class="p-6 bg-[#FCFBF4] rounded-lg border border-gray-100">
+                <div class="pt-10 grid md:grid-cols-2 gap-8 text-sm">
+                    <div class="p-6 bg-[#FCFBF4] rounded-lg border border-gray-100 flex flex-col items-center justify-center">
                         <h4 class="font-bold text-[#D4AF37] mb-2 uppercase tracking-widest">Visit Our Studio</h4>
                         <p class="text-gray-800 font-medium">Nashik, Maharashtra, India</p>
                     </div>
-                    <div class="p-6 bg-[#FCFBF4] rounded-lg border border-gray-100">
+                    <div class="p-6 bg-[#FCFBF4] rounded-lg border border-gray-100 flex flex-col items-center justify-center">
                         <h4 class="font-bold text-[#D4AF37] mb-2 uppercase tracking-widest">Connect With Us</h4>
                         <p class="text-gray-500 mb-1">Call or WhatsApp:</p>
                         <p class="font-bold text-gray-800 tracking-wider">+91 8208059509</p>
@@ -114,7 +114,6 @@
                     <label class="text-[10px] uppercase font-bold text-gray-400 ml-1">Product Name</label>
                     <input type="text" id="pName" placeholder="e.g. Peshwai Nath" class="w-full p-4 border rounded focus:ring-1 focus:ring-[#D4AF37] outline-none">
                 </div>
-                
                 <div>
                     <label class="text-[10px] uppercase font-bold text-gray-400 ml-1">Select Category</label>
                     <select id="pCategory" class="w-full p-4 border rounded bg-white outline-none">
@@ -132,22 +131,18 @@
                         <option value="Bugdi">Bugdi</option>
                     </select>
                 </div>
-
                 <div>
                     <label class="text-[10px] uppercase font-bold text-gray-400 ml-1">Price (₹)</label>
                     <input type="number" id="pPrice" placeholder="0.00" class="w-full p-4 border rounded outline-none">
                 </div>
-
                 <div>
                     <label class="text-[10px] uppercase font-bold text-gray-400 ml-1">Description</label>
                     <textarea id="pDesc" placeholder="Describe the craftsmanship..." class="w-full p-4 border rounded h-24 outline-none"></textarea>
                 </div>
-                
                 <div class="border-2 border-dashed p-6 rounded bg-gray-50 text-center">
                     <p class="text-xs text-gray-500 mb-3">Product Photo (Max 1MB)</p>
                     <input type="file" id="pImage" accept="image/*" class="text-xs mx-auto">
                 </div>
-
                 <button onclick="uploadToFirebase()" id="uploadBtn" class="w-full gold-gradient text-white py-4 font-bold tracking-widest rounded shadow-lg hover:opacity-90 transition">SAVE PRODUCT</button>
                 <button onclick="logoutAdmin()" class="w-full text-xs text-gray-400 mt-6 underline">Exit Admin Mode</button>
             </div>
@@ -160,11 +155,11 @@
             <div class="md:w-1/2 bg-gray-50 h-[350px] md:h-auto">
                 <img id="modalImg" src="" class="w-full h-full object-contain p-6">
             </div>
-            <div class="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+            <div class="md:w-1/2 p-8 md:p-12 flex flex-col justify-center text-center md:text-left">
                 <div id="modalCat" class="text-[10px] uppercase tracking-widest text-[#D4AF37] mb-2 font-bold"></div>
                 <h2 id="modalName" class="text-3xl mb-2 brand-font font-bold"></h2>
                 <p id="modalPrice" class="text-2xl text-gray-800 mb-6"></p>
-                <div class="w-12 h-[1px] bg-gray-300 mb-6"></div>
+                <div class="w-12 h-[1px] bg-gray-300 mb-6 mx-auto md:mx-0"></div>
                 <p id="modalDesc" class="text-gray-500 leading-relaxed mb-10 font-light"></p>
                 <button id="whatsappBtn" class="w-full bg-[#25D366] text-white py-5 rounded-full font-bold flex items-center justify-center gap-3 shadow-xl hover:scale-105 transition-transform">
                     Inquire on WhatsApp
@@ -195,34 +190,22 @@
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-tab'));
             document.getElementById('page-'+id).classList.remove('hidden-section');
             document.getElementById('link-'+id).classList.add('active-tab');
-            
-            // Hide "About Us" when on Admin page to keep it clean
             const aboutUs = document.getElementById('about-us');
             if(id === 'admin') aboutUs.style.display = 'none';
             else aboutUs.style.display = 'block';
-
             window.scrollTo(0,0);
         }
 
         function checkAdmin() {
-            if(isAdminLoggedIn) { 
-                showPage('admin'); 
-            } else {
+            if(isAdminLoggedIn) { showPage('admin'); } 
+            else {
                 const pass = prompt("Enter Admin Password:");
-                if(pass === ADMIN_PASSWORD) { 
-                    isAdminLoggedIn = true; 
-                    showPage('admin'); 
-                    renderProducts(); 
-                }
+                if(pass === ADMIN_PASSWORD) { isAdminLoggedIn = true; showPage('admin'); renderProducts(); }
                 else if(pass !== null) alert("Incorrect Password!");
             }
         }
 
-        function logoutAdmin() { 
-            isAdminLoggedIn = false; 
-            showPage('home'); 
-            renderProducts(); 
-        }
+        function logoutAdmin() { isAdminLoggedIn = false; showPage('home'); renderProducts(); }
 
         function filterCategory(cat, el) {
             currentFilter = cat;
@@ -239,44 +222,25 @@
             const file = document.getElementById('pImage').files[0];
             const btn = document.getElementById('uploadBtn');
 
-            if(!name || !category || !price || !file) return alert("Please fill all details and select a category.");
-            btn.innerText = "UPLOADING..."; 
-            btn.disabled = true;
+            if(!name || !category || !price || !file) return alert("Please fill all details.");
+            btn.innerText = "UPLOADING..."; btn.disabled = true;
 
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = async function() {
                 try {
-                    await db.collection('products').add({ 
-                        name, category, price, desc, image: reader.result, createdAt: Date.now() 
-                    });
-                    alert("Jewelry added to collection!");
-                    location.reload();
-                } catch (e) { 
-                    alert(e.message); 
-                    btn.innerText = "SAVE PRODUCT"; 
-                    btn.disabled = false; 
-                }
+                    await db.collection('products').add({ name, category, price, desc, image: reader.result, createdAt: Date.now() });
+                    alert("Jewelry added!"); location.reload();
+                } catch (e) { alert(e.message); btn.innerText = "SAVE PRODUCT"; btn.disabled = false; }
             };
         }
 
         function renderProducts() {
             db.collection('products').orderBy('createdAt', 'desc').onSnapshot(snap => {
                 const grid = document.getElementById('productGrid');
-                if(snap.empty) { 
-                    grid.innerHTML = '<p class="col-span-full text-center py-20 text-gray-400">No jewelry items found.</p>'; 
-                    return; 
-                }
-                
-                let filteredDocs = snap.docs;
-                if(currentFilter !== 'All') {
-                    filteredDocs = snap.docs.filter(d => d.data().category === currentFilter);
-                }
-
-                if(filteredDocs.length === 0) {
-                    grid.innerHTML = `<p class="col-span-full text-center py-20 text-gray-400">No items in ${currentFilter} yet.</p>`;
-                    return;
-                }
+                if(snap.empty) { grid.innerHTML = '<p class="col-span-full text-center py-20 text-gray-400">No items found.</p>'; return; }
+                let filteredDocs = currentFilter === 'All' ? snap.docs : snap.docs.filter(d => d.data().category === currentFilter);
+                if(filteredDocs.length === 0) { grid.innerHTML = `<p class="col-span-full text-center py-20 text-gray-400">No items in ${currentFilter}.</p>`; return; }
 
                 grid.innerHTML = filteredDocs.map(doc => {
                     const p = doc.data();
@@ -289,29 +253,13 @@
                             <div class="text-[9px] text-[#D4AF37] uppercase font-bold tracking-widest mb-1">${p.category}</div>
                             <h4 class="brand-font text-md font-bold text-gray-800">${p.name}</h4>
                             <p class="text-sm font-semibold">₹${p.price}</p>
-                            ${isAdminLoggedIn ? `<button onclick="event.stopPropagation(); deleteProduct('${doc.id}')" class="w-full mt-4 py-2 text-[10px] bg-red-50 text-red-500 rounded uppercase font-bold">Remove From Shop</button>` : ''}
-                        </div>
-                    `;
+                            ${isAdminLoggedIn ? `<button onclick="event.stopPropagation(); deleteProduct('${doc.id}')" class="w-full mt-4 py-2 text-[10px] bg-red-50 text-red-500 rounded uppercase font-bold">Remove</button>` : ''}
+                        </div>`;
                 }).join('');
-
-                const urlParams = new URLSearchParams(window.location.search);
-                const productId = urlParams.get('id');
-                if (productId && !document.getElementById('productModal').classList.contains('hidden')) {
-                } else if (productId) {
-                    const doc = snap.docs.find(d => d.id === productId);
-                    if (doc) {
-                        const p = doc.data();
-                        openModal(doc.id, p.name, p.price, p.desc, p.image, p.category, false);
-                    }
-                }
             });
         }
 
-        async function deleteProduct(id) {
-            if(confirm("Permanently delete this item?")) {
-                await db.collection('products').doc(id).delete();
-            }
-        }
+        async function deleteProduct(id) { if(confirm("Delete item?")) await db.collection('products').doc(id).delete(); }
 
         function openModal(id, name, price, desc, img, cat, updateUrl = true) {
             document.getElementById('modalImg').src = img;
@@ -319,27 +267,14 @@
             document.getElementById('modalName').innerText = name;
             document.getElementById('modalPrice').innerText = '₹' + price;
             document.getElementById('modalDesc').innerText = desc;
-            
-            const baseUrl = window.location.origin + window.location.pathname;
-            const productLink = `${baseUrl}?id=${id}`;
-            if(updateUrl) window.history.pushState({}, '', productLink);
-
-            const msg = encodeURIComponent(`Namaste Shree Siddh Kala Alankar! \n\nI saw this piece on your website and would like to know more: \n\n*Item:* ${name}\n*Category:* ${cat}\n*Price:* ₹${price}\n\nLink: ${productLink}`);
-            
-            document.getElementById('whatsappBtn').onclick = () => {
-                window.open(`https://wa.me/918208059509?text=${msg}`, '_blank');
-            };
-
+            const productLink = window.location.origin + window.location.pathname + `?id=${id}`;
+            const msg = encodeURIComponent(`Namaste Shree Siddh Kala Alankar! \n\nI saw this piece: \n\n*Item:* ${name}\n*Price:* ₹${price}\n\nLink: ${productLink}`);
+            document.getElementById('whatsappBtn').onclick = () => window.open(`https://wa.me/918208059509?text=${msg}`, '_blank');
             document.getElementById('productModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
 
-        function closeModal() {
-            document.getElementById('productModal').classList.add('hidden');
-            document.body.style.overflow = 'auto';
-            const baseUrl = window.location.origin + window.location.pathname;
-            window.history.pushState({}, '', baseUrl);
-        }
+        function closeModal() { document.getElementById('productModal').classList.add('hidden'); document.body.style.overflow = 'auto'; }
 
         renderProducts();
     </script>
