@@ -52,32 +52,34 @@
             </div>
         </div>
 
-       <div class="py-24 px-6 max-w-4xl mx-auto text-center">
-    <h2 class="text-3xl md:text-4xl mb-6 brand-font text-[#D4AF37]">Our Story</h2>
-    <div class="w-16 h-[1px] bg-[#D4AF37] mx-auto mb-10"></div>
-    
-    <div class="space-y-6 text-gray-600 leading-relaxed font-light">
-        <p>
-            Welcome to <span class="font-semibold text-gray-800">Shree Siddh Kala Alankar</span>, where we breathe life into the timeless traditions of Maharashtrian heritage. Based in the historic city of Nashik, we specialize in the meticulous creation of 100% handcrafted jewelry that captures the royal essence of our culture.
-        </p>
-        <p>
-            Founded and curated by <span class="text-gray-800 font-medium">Sheetal Gadekar</span> and managed by <span class="text-gray-800 font-medium">Siddhesh Gadekar</span>, our collection is more than just ornament—it is a tribute to the craftsmanship passed down through generations. From the intricate detail of a Peshwai Nath to the graceful strength of a Mangalsutra, every piece is crafted with passion, precision, and the finest materials.
-        </p>
-        
-        <div class="pt-10 grid md:grid-cols-2 gap-8 text-sm">
-            <div class="p-8 bg-[#F8F5E4] rounded-lg border border-[#E8E2C8] flex flex-col items-center justify-center shadow-md">
-                <h4 class="font-bold text-[#D4AF37] mb-3 uppercase tracking-[0.2em]">Located At</h4>
-                <p class="text-gray-800 font-medium italic text-center">Nashik, Maharashtra</p>
+        <section id="about-us" class="py-20 px-6 bg-white border-t border-gray-100 mt-auto">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-3xl md:text-4xl mb-6 brand-font text-[#D4AF37]">Our Story</h2>
+                <div class="w-16 h-[1px] bg-[#D4AF37] mx-auto mb-10"></div>
+                
+                <div class="space-y-6 text-gray-600 leading-relaxed font-light">
+                    <p>
+                        Welcome to <span class="font-semibold text-gray-800">Shree Siddh Kala Alankar</span>, where we breathe life into the timeless traditions of Maharashtrian heritage. Based in the historic city of Nashik, we specialize in the meticulous creation of 100% handcrafted jewelry that captures the royal essence of our culture.
+                    </p>
+                    <p>
+                        Founded and curated by <span class="text-gray-800 font-medium">Sheetal Gadekar</span> and managed by <span class="text-gray-800 font-medium">Siddhesh Gadekar</span>, our collection is more than just ornament—it is a tribute to the craftsmanship passed down through generations. From the intricate detail of a Peshwai Nath to the graceful strength of a Mangalsutra, every piece is crafted with passion, precision, and the finest materials.
+                    </p>
+                    
+                    <div class="pt-10 grid md:grid-cols-2 gap-8 text-sm">
+                        <div class="p-6 bg-[#FCFBF4] rounded-lg border border-gray-100 flex flex-col items-center justify-center">
+                            <h4 class="font-bold text-[#D4AF37] mb-2 uppercase tracking-widest">Located At</h4>
+                            <p class="text-gray-800 font-medium italic">Nashik, Maharashtra</p>
+                        </div>
+                        <div class="p-6 bg-[#FCFBF4] rounded-lg border border-gray-100 flex flex-col items-center justify-center">
+                            <h4 class="font-bold text-[#D4AF37] mb-2 uppercase tracking-widest">Connect With Us</h4>
+                            <p>Call or WhatsApp:</p>
+                            <p class="font-bold text-gray-800 mt-1 tracking-wider">+91 8208059509</p>
+                            <p class="font-bold text-gray-800 tracking-wider">+91 8208069292</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="p-8 bg-[#F8F5E4] rounded-lg border border-[#E8E2C8] flex flex-col items-center justify-center shadow-md text-center">
-                <h4 class="font-bold text-[#D4AF37] mb-3 uppercase tracking-[0.2em]">Connect With Us</h4>
-                <p class="text-gray-500 mb-2">Call or WhatsApp:</p>
-                <a href="tel:+918208059509" class="font-bold text-gray-800 tracking-wider hover:text-[#D4AF37] transition-colors">+91 8208059509</a>
-                <a href="tel:+918208069292" class="font-bold text-gray-800 tracking-wider hover:text-[#D4AF37] transition-colors">+91 8208069292</a>
-            </div>
-        </div>
-    </div>
-</div>
+        </section>
     </section>
 
     <section id="page-collection" class="content-section hidden-section py-20 px-6 max-w-7xl mx-auto">
@@ -136,24 +138,23 @@
         <div class="bg-white max-w-5xl w-full flex flex-col md:flex-row overflow-hidden rounded-sm relative max-h-[90vh] overflow-y-auto">
             <button onclick="closeModal()" class="absolute top-5 right-5 text-3xl">&times;</button>
             <div class="md:w-1/2 bg-gray-50"><img id="modalImg" src="" class="w-full h-full object-contain p-6"></div>
-            <div class="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+            <div class="md:w-1/2 p-8 md:p-12 flex flex-col justify-center text-center">
                 <div id="modalCat" class="text-[10px] uppercase tracking-widest text-[#D4AF37] mb-2 font-bold"></div>
                 <h2 id="modalName" class="text-3xl mb-2 brand-font font-bold"></h2>
                 <p id="modalPrice" class="text-2xl text-gray-800 mb-6"></p>
                 <p id="modalDesc" class="text-gray-500 leading-relaxed mb-10 font-light"></p>
-                <button id="whatsappBtn" class="w-full bg-[#25D366] text-white py-5 rounded-full font-bold shadow-xl">Inquire on WhatsApp</button>
+                <button id="whatsappBtn" class="w-full bg-[#25D366] text-white py-5 rounded-full font-bold shadow-xl uppercase">Inquire on WhatsApp</button>
             </div>
         </div>
     </div>
 
     <footer class="bg-white border-t border-gray-100 py-12 px-6 text-center">
         <div class="max-w-7xl mx-auto">
-            <h3 class="brand-font text-lg text-[#D4AF37] mb-2">SHREE SIDDH KALA ALANKAR</h3>
-            <p class="text-gray-400 text-xs tracking-widest mb-8">NASHIK | MAHARASHTRA</p>
+            <h3 class="brand-font text-lg text-[#D4AF37] mb-2 uppercase">Shree Siddh Kala Alankar</h3>
+            <p class="text-gray-400 text-[10px] tracking-[0.4em] mb-8">NASHIK | MAHARASHTRA</p>
             <div class="w-12 h-[1px] bg-gray-200 mx-auto mb-8"></div>
-            <p onclick="showPage('admin')" class="text-[10px] text-gray-300 cursor-default select-none">
-                © 2025 Shree Siddh Kala Alankar. All Rights Reserved.
-                
+            <p onclick="showPage('admin')" class="text-[10px] text-gray-300 cursor-default select-none tracking-widest">
+                © 2024 SHREE SIDDH KALA ALANKAR. ALL RIGHTS RESERVED.
             </p>
         </div>
     </footer>
@@ -174,9 +175,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        function isAdmin() {
-            return localStorage.getItem('isSiddhAdmin') === 'true';
-        }
+        function isAdmin() { return localStorage.getItem('isSiddhAdmin') === 'true'; }
 
         function showPage(id) {
             if(id === 'admin' && !isAdmin()) {
@@ -184,29 +183,19 @@
                 if(pass === ADMIN_PASSWORD) {
                     localStorage.setItem('isSiddhAdmin', 'true');
                     document.getElementById('link-admin').style.display = 'inline-block';
-                } else {
-                    alert("Incorrect Password");
-                    return;
-                }
+                } else { alert("Incorrect Password"); return; }
             }
-
             document.querySelectorAll('.content-section').forEach(s => s.classList.add('hidden-section'));
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-tab'));
-            
             const targetPage = document.getElementById('page-'+id);
             const targetLink = document.getElementById('link-'+id);
-            
             if(targetPage) targetPage.classList.remove('hidden-section');
             if(targetLink) targetLink.classList.add('active-tab');
-            
             window.scrollTo(0,0);
-            if(id === 'admin') renderProducts();
+            if(id === 'admin' || id === 'collection') renderProducts();
         }
 
-        function logoutAdmin() {
-            localStorage.removeItem('isSiddhAdmin');
-            window.location.reload();
-        }
+        function logoutAdmin() { localStorage.removeItem('isSiddhAdmin'); window.location.reload(); }
 
         function filterCategory(cat, el) {
             currentFilter = cat;
@@ -222,10 +211,8 @@
             const desc = document.getElementById('pDesc').value;
             const file = document.getElementById('pImage').files[0];
             const btn = document.getElementById('uploadBtn');
-
             if(!name || !category || !price || !file) return alert("Fill all details.");
             btn.innerText = "COMPRESSING..."; btn.disabled = true;
-
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = function(e) {
@@ -240,11 +227,9 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
                     const compressed = canvas.toDataURL('image/jpeg', 0.7);
-
                     try {
                         await db.collection('products').add({ name, category, price, desc, image: compressed, createdAt: Date.now() });
-                        alert("Added Successfully!");
-                        location.reload();
+                        alert("Added Successfully!"); location.reload();
                     } catch (err) { alert(err.message); btn.innerText = "SAVE PRODUCT"; btn.disabled = false; }
                 };
             };
@@ -253,6 +238,7 @@
         function renderProducts() {
             db.collection('products').orderBy('createdAt', 'desc').onSnapshot(snap => {
                 const grid = document.getElementById('productGrid');
+                if (!grid) return;
                 let filteredDocs = currentFilter === 'All' ? snap.docs : snap.docs.filter(d => d.data().category === currentFilter);
                 grid.innerHTML = '';
                 filteredDocs.forEach(doc => {
@@ -274,36 +260,53 @@
 
         async function deleteProduct(id) { if(confirm("Delete product?")) await db.collection('products').doc(id).delete(); }
 
-       function openModal(id, name, price, desc, img, cat) {
-    document.getElementById('modalImg').src = img;
-    document.getElementById('modalCat').innerText = cat;
-    document.getElementById('modalName').innerText = name;
-    document.getElementById('modalPrice').innerText = '₹' + price;
-    document.getElementById('modalDesc').innerText = desc || "Handcrafted with traditional elegance.";
+        function openModal(id, name, price, desc, img, cat) {
+            document.getElementById('modalImg').src = img;
+            document.getElementById('modalCat').innerText = cat;
+            document.getElementById('modalName').innerText = name;
+            document.getElementById('modalPrice').innerText = '₹' + price;
+            document.getElementById('modalDesc').innerText = desc || "Handcrafted with traditional elegance.";
+            
+            // Generate link
+            const currentUrl = window.location.origin + window.location.pathname;
+            const productLink = `${currentUrl}?id=${id}`;
 
-    // The current website link with the product ID
-    const link = window.location.origin + window.location.pathname + "?id=" + id;
+            // FORMATTED WHATSAPP MESSAGE
+            const messageBody = `Namaste Shree Siddh Kala Alankar! \n\nI saw this piece on your website: \n\n*Item:* ${name} \n*Price:* ₹${price} \n\n*Link:* ${productLink}`;
 
-    // EXACT MESSAGE FORMATTING
-    const messageBody = `Namaste Shree Siddh Kala Alankar! \n\nI saw this piece on your website: \n\n*Item:* ${name} \n*Price:* ₹${price} \n\n*Link:* ${link}`;
+            document.getElementById('whatsappBtn').onclick = () => window.open(`https://wa.me/918208059509?text=${encodeURIComponent(messageBody)}`, '_blank');
+            document.getElementById('productModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            
+            // Optional: Update URL without reloading page
+            window.history.pushState({}, '', productLink);
+        }
 
-    // Update WhatsApp Button Click
-    document.getElementById('whatsappBtn').onclick = () => {
-        window.open(`https://wa.me/918208059509?text=${encodeURIComponent(messageBody)}`, '_blank');
-    };
+        function closeModal() { 
+            document.getElementById('productModal').classList.add('hidden'); 
+            document.body.style.overflow = 'auto';
+            // Reset URL when closing
+            window.history.pushState({}, '', window.location.origin + window.location.pathname);
+        }
 
-    document.getElementById('productModal').classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-}
-
-        function closeModal() { document.getElementById('productModal').classList.add('hidden'); document.body.style.overflow = 'auto'; }
+        // DEEP LINK LISTENER
+        async function checkDeepLink() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            if (productId) {
+                const doc = await db.collection('products').doc(productId).get();
+                if (doc.exists) {
+                    const p = doc.data();
+                    openModal(doc.id, p.name, p.price, p.desc, p.image, p.category);
+                }
+            }
+        }
 
         window.addEventListener('DOMContentLoaded', () => {
             showPage('home'); 
-            if (isAdmin()) {
-                document.getElementById('link-admin').style.display = 'inline-block';
-            }
+            if (isAdmin()) { document.getElementById('link-admin').style.display = 'inline-block'; }
             renderProducts();
+            checkDeepLink(); // Run the link check on startup
         });
     </script>
 </body>
