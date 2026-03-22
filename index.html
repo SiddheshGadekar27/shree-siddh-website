@@ -51,6 +51,16 @@
                 <button onclick="showPage('collection')" class="px-12 py-4 border border-white hover:bg-white hover:text-black transition-all uppercase tracking-widest text-xs">View Collection</button>
             </div>
         </div>
+
+        <div class="py-24 px-6 max-w-5xl mx-auto text-center">
+            <h2 class="text-3xl mb-6 brand-font">Our Story</h2>
+            <p class="text-gray-600 leading-loose font-light italic">
+                Rooted in the heart of Nashik, Shree Siddh Kala Alankar is a tribute to the timeless beauty of Maharashtrian culture. 
+                Every piece we create—from the intricate Thushi to the regal Nath—is handcrafted by master artisans who have 
+                preserved the secrets of gold-crafting for generations. We don't just sell jewelry; we carry forward a legacy 
+                of elegance, purity, and tradition.
+            </p>
+        </div>
     </section>
 
     <section id="page-collection" class="content-section hidden-section py-20 px-6 max-w-7xl mx-auto">
@@ -119,8 +129,15 @@
         </div>
     </div>
 
-    <footer class="py-10 text-center opacity-20">
-        <span onclick="showPage('admin')" class="cursor-default text-[10px]">© 2024 Shree Siddh Kala Alankar</span>
+    <footer class="bg-white border-t border-gray-100 py-12 px-6 text-center">
+        <div class="max-w-7xl mx-auto">
+            <h3 class="brand-font text-lg text-[#D4AF37] mb-2">SHREE SIDDH KALA ALANKAR</h3>
+            <p class="text-gray-400 text-xs tracking-widest mb-8">NASHIK | MAHARASHTRA</p>
+            <div class="w-12 h-[1px] bg-gray-200 mx-auto mb-8"></div>
+            <p onclick="showPage('admin')" class="text-[10px] text-gray-300 cursor-default select-none">
+                © 2024 Shree Siddh Kala Alankar. All Rights Reserved.
+            </p>
+        </div>
     </footer>
 
     <script>
@@ -143,7 +160,6 @@
             return localStorage.getItem('isSiddhAdmin') === 'true';
         }
 
-        // MODIFIED: Combined page switching with security checks
         function showPage(id) {
             if(id === 'admin' && !isAdmin()) {
                 const pass = prompt("Enter Admin Password:");
@@ -165,12 +181,13 @@
             if(targetPage) targetPage.classList.remove('hidden-section');
             if(targetLink) targetLink.classList.add('active-tab');
             
+            window.scrollTo(0,0);
             if(id === 'admin') renderProducts();
         }
 
         function logoutAdmin() {
             localStorage.removeItem('isSiddhAdmin');
-            window.location.href = window.location.pathname; // Hard refresh to Home
+            window.location.reload();
         }
 
         function filterCategory(cat, el) {
@@ -254,7 +271,6 @@
 
         function closeModal() { document.getElementById('productModal').classList.add('hidden'); document.body.style.overflow = 'auto'; }
 
-        // MODIFIED: Ensure site starts on HOME for everyone
         window.addEventListener('DOMContentLoaded', () => {
             showPage('home'); 
             if (isAdmin()) {
