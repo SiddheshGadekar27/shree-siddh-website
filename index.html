@@ -58,12 +58,8 @@
                 <div class="w-16 h-[1px] bg-[#D4AF37] mx-auto mb-10"></div>
                 
                 <div class="space-y-6 text-gray-600 leading-relaxed font-light">
-                    <p>
-                        Welcome to <span class="font-semibold text-gray-800">Shree Siddh Kala Alankar</span>, where we breathe life into the timeless traditions of Maharashtrian heritage. Based in the historic city of Nashik, we specialize in the meticulous creation of 100% handcrafted jewelry that captures the royal essence of our culture.
-                    </p>
-                    <p>
-                        Founded and curated by <span class="text-gray-800 font-medium">Sheetal Gadekar</span> and managed by <span class="text-gray-800 font-medium">Siddhesh Gadekar</span>, our collection is more than just ornament—it is a tribute to the craftsmanship passed down through generations. From the intricate detail of a Peshwai Nath to the graceful strength of a Mangalsutra, every piece is crafted with passion, precision, and the finest materials.
-                    </p>
+                    <p> Welcome to <span class="font-semibold text-gray-800">Shree Siddh Kala Alankar</span>, where we breathe life into the timeless traditions of Maharashtrian heritage. Based in the historic city of Nashik, we specialize in the meticulous creation of 100% handcrafted jewelry that captures the royal essence of our culture.</p>
+                    <p> Founded and curated by <span class="font-medium text-gray-800">Sheetal Gadekar</span> and managed by <span class="font-medium text-gray-800">Siddhesh Gadekar</span>, our collection is more than just ornament—it is a tribute to the craftsmanship passed down through generations. From the intricate detail of a Peshwai Nath to the graceful strength of a Mangalsutra, every piece is crafted with passion, precision, and the finest materials.</p>
                     
                     <div class="pt-10 grid md:grid-cols-2 gap-8 text-sm">
                         <div class="p-6 bg-[#FCFBF4] rounded-lg border border-gray-100 flex flex-col items-center justify-center">
@@ -127,9 +123,19 @@
                 </select>
                 <input type="number" id="pPrice" placeholder="Price (₹)" class="w-full p-4 border rounded outline-none">
                 <textarea id="pDesc" placeholder="Product Description" class="w-full p-4 border rounded h-24 outline-none"></textarea>
-                <input type="file" id="pImage" accept="image/*" class="text-xs mx-auto">
-                <button onclick="uploadToFirebase()" id="uploadBtn" class="w-full gold-gradient text-white py-4 font-bold rounded shadow-lg">SAVE PRODUCT</button>
-                <button onclick="logoutAdmin()" class="w-full text-xs text-gray-400 mt-6 underline">Logout & Exit Admin</button>
+                
+                <div id="imageInputGroup">
+                    <p class="text-[10px] text-gray-400 mb-1">Upload Image (Only for New Products)</p>
+                    <input type="file" id="pImage" accept="image/*" class="text-xs mx-auto">
+                </div>
+
+                <div class="flex gap-2">
+                    <button onclick="uploadToFirebase()" id="uploadBtn" class="w-full gold-gradient text-white py-4 font-bold rounded shadow-lg uppercase tracking-widest">Save Product</button>
+                    <button onclick="updateProduct()" id="updateBtn" class="hidden w-full bg-blue-600 text-white py-4 font-bold rounded shadow-lg uppercase tracking-widest">Update Product</button>
+                </div>
+                <button id="cancelEdit" onclick="resetAdminForm()" class="hidden w-full text-xs text-red-500 mt-2 underline">Cancel Edit Mode</button>
+                
+                <button onclick="logoutAdmin()" class="w-full text-xs text-gray-400 mt-10 underline">Logout & Exit Admin</button>
             </div>
         </div>
     </section>
@@ -162,6 +168,7 @@
     <script>
         const ADMIN_PASSWORD = "nashik123"; 
         let currentFilter = 'All';
+        let editId = null;
 
         const firebaseConfig = {
             apiKey: "AIzaSyAf9oBIC7SlWFR2467xHBh3iQ2Mdejua-8",
@@ -202,6 +209,48 @@
             document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
             el.classList.add('active');
             renderProducts();
+        }
+
+        // --- EDIT LOGIC ---
+        async function editProduct(id) {
+            const doc = await db.collection('products').doc(id).get();
+            const p = doc.data();
+            editId = id;
+            document.getElementById('pName').value = p.name;
+            document.getElementById('pCategory').value = p.category;
+            document.getElementById('pPrice').value = p.price;
+            document.getElementById('pDesc').value = p.desc;
+            document.getElementById('imageInputGroup').classList.add('hidden');
+            document.getElementById('uploadBtn').classList.add('hidden');
+            document.getElementById('updateBtn').classList.remove('hidden');
+            document.getElementById('cancelEdit').classList.remove('hidden');
+            window.scrollTo(0,0);
+        }
+
+        async function updateProduct() {
+            const btn = document.getElementById('updateBtn');
+            btn.innerText = "UPDATING..."; btn.disabled = true;
+            try {
+                await db.collection('products').doc(editId).update({
+                    name: document.getElementById('pName').value,
+                    category: document.getElementById('pCategory').value,
+                    price: document.getElementById('pPrice').value,
+                    desc: document.getElementById('pDesc').value
+                });
+                alert("Updated!"); resetAdminForm(); renderProducts();
+            } catch(e) { alert(e.message); }
+            btn.innerText = "Update Product"; btn.disabled = false;
+        }
+
+        function resetAdminForm() {
+            editId = null;
+            document.getElementById('pName').value = '';
+            document.getElementById('pPrice').value = '';
+            document.getElementById('pDesc').value = '';
+            document.getElementById('imageInputGroup').classList.remove('hidden');
+            document.getElementById('uploadBtn').classList.remove('hidden');
+            document.getElementById('updateBtn').classList.add('hidden');
+            document.getElementById('cancelEdit').classList.add('hidden');
         }
 
         function uploadToFirebase() {
@@ -251,7 +300,12 @@
                         <div class="text-[9px] text-[#D4AF37] uppercase font-bold tracking-widest mb-1">${p.category}</div>
                         <h4 class="brand-font text-md font-bold text-gray-800">${p.name}</h4>
                         <p class="text-sm font-semibold">₹${p.price}</p>
-                        ${isAdmin() ? `<button onclick="event.stopPropagation(); deleteProduct('${doc.id}')" class="w-full mt-4 py-2 text-[10px] bg-red-50 text-red-500 rounded uppercase font-bold">Remove</button>` : ''}
+                        ${isAdmin() ? `
+                            <div class="grid grid-cols-2 gap-2 mt-4">
+                                <button onclick="event.stopPropagation(); editProduct('${doc.id}')" class="py-2 text-[10px] bg-blue-50 text-blue-600 rounded uppercase font-bold">Edit</button>
+                                <button onclick="event.stopPropagation(); deleteProduct('${doc.id}')" class="py-2 text-[10px] bg-red-50 text-red-500 rounded uppercase font-bold">Remove</button>
+                            </div>
+                        ` : ''}
                     `;
                     grid.appendChild(card);
                 });
@@ -267,29 +321,21 @@
             document.getElementById('modalPrice').innerText = '₹' + price;
             document.getElementById('modalDesc').innerText = desc || "Handcrafted with traditional elegance.";
             
-            // Generate link
-            const currentUrl = window.location.origin + window.location.pathname;
-            const productLink = `${currentUrl}?id=${id}`;
-
-            // FORMATTED WHATSAPP MESSAGE
+            const productLink = `${window.location.origin}${window.location.pathname}?id=${id}`;
             const messageBody = `Namaste Shree Siddh Kala Alankar! \n\nI saw this piece on your website: \n\n*Item:* ${name} \n*Price:* ₹${price} \n\n*Link:* ${productLink}`;
 
             document.getElementById('whatsappBtn').onclick = () => window.open(`https://wa.me/918208059509?text=${encodeURIComponent(messageBody)}`, '_blank');
             document.getElementById('productModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
-            
-            // Optional: Update URL without reloading page
             window.history.pushState({}, '', productLink);
         }
 
         function closeModal() { 
             document.getElementById('productModal').classList.add('hidden'); 
             document.body.style.overflow = 'auto';
-            // Reset URL when closing
             window.history.pushState({}, '', window.location.origin + window.location.pathname);
         }
 
-        // DEEP LINK LISTENER
         async function checkDeepLink() {
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id');
@@ -306,7 +352,7 @@
             showPage('home'); 
             if (isAdmin()) { document.getElementById('link-admin').style.display = 'inline-block'; }
             renderProducts();
-            checkDeepLink(); // Run the link check on startup
+            checkDeepLink();
         });
     </script>
 </body>
