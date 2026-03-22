@@ -274,19 +274,27 @@
 
         async function deleteProduct(id) { if(confirm("Delete product?")) await db.collection('products').doc(id).delete(); }
 
-        function openModal(id, name, price, desc, img, cat) {
-            document.getElementById('modalImg').src = img;
-            document.getElementById('modalCat').innerText = cat;
-            document.getElementById('modalName').innerText = name;
-            document.getElementById('modalPrice').innerText = '₹' + price;
-            document.getElementById('modalDesc').innerText = desc || "Handcrafted with traditional elegance.";
-            const link = window.location.origin + window.location.pathname + "?id=" + id;
-            const messageBody = `Namaste! Shree Siddh Kala Alankar
-            I saw this on your website: \n\n*Item:* ${name} \n*Price:* ₹${price} \n\n*Link:* ${link}`;
-            document.getElementById('whatsappBtn').onclick = () => window.open(`https://wa.me/918208059509?text=${encodeURIComponent(messageBody)}`, '_blank');
-            document.getElementById('productModal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
+       function openModal(id, name, price, desc, img, cat) {
+    document.getElementById('modalImg').src = img;
+    document.getElementById('modalCat').innerText = cat;
+    document.getElementById('modalName').innerText = name;
+    document.getElementById('modalPrice').innerText = '₹' + price;
+    document.getElementById('modalDesc').innerText = desc || "Handcrafted with traditional elegance.";
+
+    // The current website link with the product ID
+    const link = window.location.origin + window.location.pathname + "?id=" + id;
+
+    // EXACT MESSAGE FORMATTING
+    const messageBody = `Namaste Shree Siddh Kala Alankar! \n\nI saw this piece on your website: \n\n*Item:* ${name} \n*Price:* ₹${price} \n\n*Link:* ${link}`;
+
+    // Update WhatsApp Button Click
+    document.getElementById('whatsappBtn').onclick = () => {
+        window.open(`https://wa.me/918208059509?text=${encodeURIComponent(messageBody)}`, '_blank');
+    };
+
+    document.getElementById('productModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
 
         function closeModal() { document.getElementById('productModal').classList.add('hidden'); document.body.style.overflow = 'auto'; }
 
