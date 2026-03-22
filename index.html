@@ -144,8 +144,11 @@
                 <div id="modalCat" class="text-[10px] uppercase tracking-widest text-[#D4AF37] mb-2 font-bold"></div>
                 <h2 id="modalName" class="text-3xl mb-2 brand-font font-bold"></h2>
                 <p id="modalPrice" class="text-2xl text-gray-800 mb-6"></p>
+                <div class="w-12 h-[1px] bg-gray-300 mb-6"></div>
                 <p id="modalDesc" class="text-gray-500 leading-relaxed mb-10 font-light"></p>
-                <button id="whatsappBtn" class="w-full bg-[#25D366] text-white py-5 rounded-full font-bold shadow-xl">Inquire on WhatsApp</button>
+                <button id="whatsappBtn" class="w-full bg-[#25D366] text-white py-5 rounded-full font-bold shadow-xl flex items-center justify-center gap-3">
+                    Inquire on WhatsApp
+                </button>
             </div>
         </div>
     </div>
@@ -211,13 +214,13 @@
                 img.src = e.target.result;
                 img.onload = async function() {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 1000;
+                    const MAX_WIDTH = 1200;
                     let width = img.width, height = img.height;
                     if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
                     canvas.width = width; canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-                    const compressed = canvas.toDataURL('image/jpeg', 0.6); // Shrinks size for Firebase
+                    const compressed = canvas.toDataURL('image/jpeg', 0.7);
 
                     btn.innerText = "UPLOADING...";
                     try {
@@ -237,10 +240,7 @@
                     const p = doc.data();
                     const card = document.createElement('div');
                     card.className = "product-card p-4 cursor-pointer";
-                    
-                    // FIXED: This line makes products clickable regardless of names
                     card.onclick = () => openModal(doc.id, p.name, p.price, p.desc, p.image, p.category);
-
                     card.innerHTML = `
                         <div class="h-64 overflow-hidden mb-4 bg-gray-50 rounded">
                             <img src="${p.image}" class="w-full h-full object-cover">
@@ -262,9 +262,14 @@
             document.getElementById('modalCat').innerText = cat;
             document.getElementById('modalName').innerText = name;
             document.getElementById('modalPrice').innerText = '₹' + price;
-            document.getElementById('modalDesc').innerText = desc || "";
-            const msg = encodeURIComponent("Namaste! Interested in: " + name);
-            document.getElementById('whatsappBtn').onclick = () => window.open("https://wa.me/918208059509?text=" + msg, '_blank');
+            document.getElementById('modalDesc').innerText = desc || "Handcrafted with traditional elegance.";
+            
+            // Detailed WhatsApp Message Restoration
+            const productLink = window.location.origin + window.location.pathname + "?id=" + id;
+            const messageBody = `Namaste Shree Siddh Kala Alankar! \n\nI saw this piece on your website: \n\n*Item:* ${name} \n*Category:* ${cat} \n*Price:* ₹${price} \n\n*Link:* ${productLink}`;
+            const encodedMsg = encodeURIComponent(messageBody);
+            
+            document.getElementById('whatsappBtn').onclick = () => window.open(`https://wa.me/918208059509?text=${encodedMsg}`, '_blank');
             document.getElementById('productModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
