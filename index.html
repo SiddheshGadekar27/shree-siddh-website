@@ -54,6 +54,27 @@
     </section>
 
     <section id="page-collection" class="content-section hidden-section py-20 px-6 max-w-7xl mx-auto">
+        <div class="text-center mb-8">
+            <h2 class="text-4xl mb-2 gold-text brand-font">Our Masterpieces</h2>
+            <div class="w-24 h-[1px] bg-[#D4AF37] mx-auto mb-8"></div>
+        </div>
+
+        <div class="flex overflow-x-auto pb-6 mb-12 gap-3 no-scrollbar justify-start md:justify-center" id="filterBar">
+            <div class="category-chip active" onclick="filterCategory('All', this)">All</div>
+            <div class="category-chip" onclick="filterCategory('Mangal Sutra Long', this)">Mangal Sutra Long</div>
+            <div class="category-chip" onclick="filterCategory('Mangal Sutra Short', this)">Mangal Sutra Short</div>
+            <div class="category-chip" onclick="filterCategory('Necklaces', this)">Necklaces</div>
+            <div class="category-chip" onclick="filterCategory('Invisible Necklaces', this)">Invisible Necklaces</div>
+            <div class="category-chip" onclick="filterCategory('Premium Necklaces', this)">Premium Necklaces</div>
+            <div class="category-chip" onclick="filterCategory('Sari', this)">Sari</div>
+            <div class="category-chip" onclick="filterCategory('Bangles', this)">Bangles</div>
+            <div class="category-chip" onclick="filterCategory('Rings', this)">Rings</div>
+            <div class="category-chip" onclick="filterCategory('Earrings', this)">Earrings</div>
+            <div class="category-chip" onclick="filterCategory('Earcuffs', this)">Earcuffs</div>
+            <div class="category-chip" onclick="filterCategory('Nath', this)">Nath</div>
+            <div class="category-chip" onclick="filterCategory('Bugdi', this)">Bugdi</div>
+        </div>
+
         <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"></div>
     </section>
 
@@ -62,16 +83,28 @@
             <h2 class="text-2xl mb-8 text-center brand-font font-bold text-[#D4AF37]">Admin Dashboard</h2>
             <div class="space-y-4">
                 <input type="text" id="pName" placeholder="Product Name" class="w-full p-4 border rounded outline-none">
+                
                 <select id="pCategory" class="w-full p-4 border rounded bg-white outline-none">
-                    <option value="Mangal Sutra Short">Mangal Sutra Short</option>
+                    <option value="">-- Choose Category --</option>
                     <option value="Mangal Sutra Long">Mangal Sutra Long</option>
+                    <option value="Mangal Sutra Short">Mangal Sutra Short</option>
                     <option value="Necklaces">Necklaces</option>
+                    <option value="Invisible Necklaces">Invisible Necklaces</option>
+                    <option value="Premium Necklaces">Premium Necklaces</option>
+                    <option value="Sari">Sari</option>
+                    <option value="Bangles">Bangles</option>
+                    <option value="Rings">Rings</option>
+                    <option value="Earrings">Earrings</option>
+                    <option value="Earcuffs">Earcuffs</option>
+                    <option value="Nath">Nath</option>
+                    <option value="Bugdi">Bugdi</option>
                 </select>
-                <input type="number" id="pPrice" placeholder="Price" class="w-full p-4 border rounded outline-none">
-                <textarea id="pDesc" placeholder="Description" class="w-full p-4 border rounded h-24 outline-none"></textarea>
+
+                <input type="number" id="pPrice" placeholder="Price (₹)" class="w-full p-4 border rounded outline-none">
+                <textarea id="pDesc" placeholder="Product Description" class="w-full p-4 border rounded h-24 outline-none"></textarea>
                 <input type="file" id="pImage" accept="image/*" class="text-xs mx-auto">
-                <button onclick="uploadToFirebase()" id="uploadBtn" class="w-full gold-gradient text-white py-4 font-bold rounded">SAVE PRODUCT</button>
-                <button onclick="logoutAdmin()" class="w-full text-xs text-gray-400 mt-6 underline">Logout</button>
+                <button onclick="uploadToFirebase()" id="uploadBtn" class="w-full gold-gradient text-white py-4 font-bold rounded shadow-lg">SAVE PRODUCT</button>
+                <button onclick="logoutAdmin()" class="w-full text-xs text-gray-400 mt-6 underline">Logout & Exit Admin</button>
             </div>
         </div>
     </section>
@@ -81,11 +114,11 @@
             <button onclick="closeModal()" class="absolute top-5 right-5 text-3xl">&times;</button>
             <div class="md:w-1/2 bg-gray-50"><img id="modalImg" src="" class="w-full h-full object-contain p-6"></div>
             <div class="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
-                <div id="modalCat" class="text-[10px] uppercase text-[#D4AF37] mb-2 font-bold"></div>
+                <div id="modalCat" class="text-[10px] uppercase tracking-widest text-[#D4AF37] mb-2 font-bold"></div>
                 <h2 id="modalName" class="text-3xl mb-2 brand-font font-bold"></h2>
                 <p id="modalPrice" class="text-2xl text-gray-800 mb-6"></p>
                 <p id="modalDesc" class="text-gray-500 leading-relaxed mb-10 font-light"></p>
-                <button id="whatsappBtn" class="w-full bg-[#25D366] text-white py-5 rounded-full font-bold">Inquire on WhatsApp</button>
+                <button id="whatsappBtn" class="w-full bg-[#25D366] text-white py-5 rounded-full font-bold shadow-xl">Inquire on WhatsApp</button>
             </div>
         </div>
     </div>
@@ -106,7 +139,6 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // Check login status
         function isAdmin() {
             return localStorage.getItem('isSiddhAdmin') === 'true';
         }
@@ -119,9 +151,8 @@
         }
 
         function checkAdmin() {
-            if(isAdmin()) { 
-                showPage('admin'); 
-            } else {
+            if(isAdmin()) { showPage('admin'); } 
+            else {
                 const pass = prompt("Enter Admin Password:");
                 if(pass === ADMIN_PASSWORD) { 
                     localStorage.setItem('isSiddhAdmin', 'true'); 
@@ -136,6 +167,13 @@
             location.reload();
         }
 
+        function filterCategory(cat, el) {
+            currentFilter = cat;
+            document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            renderProducts();
+        }
+
         function uploadToFirebase() {
             const name = document.getElementById('pName').value;
             const category = document.getElementById('pCategory').value;
@@ -144,8 +182,8 @@
             const file = document.getElementById('pImage').files[0];
             const btn = document.getElementById('uploadBtn');
 
-            if(!name || !file) return alert("Fill details");
-            btn.innerText = "UPLOADING..."; btn.disabled = true;
+            if(!name || !category || !price || !file) return alert("Fill all details.");
+            btn.innerText = "COMPRESSING..."; btn.disabled = true;
 
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -154,18 +192,18 @@
                 img.src = e.target.result;
                 img.onload = async function() {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 1000;
+                    const MAX_WIDTH = 1200;
                     let width = img.width, height = img.height;
                     if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
                     canvas.width = width; canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-                    const compressed = canvas.toDataURL('image/jpeg', 0.6);
+                    const compressed = canvas.toDataURL('image/jpeg', 0.7);
 
                     try {
                         await db.collection('products').add({ name, category, price, desc, image: compressed, createdAt: Date.now() });
-                        alert("Added!");
-                        location.reload(); // Page reloads, but localStorage keeps you logged in
+                        alert("Added Successfully!");
+                        location.reload();
                     } catch (err) { alert(err.message); btn.innerText = "SAVE"; btn.disabled = false; }
                 };
             };
@@ -174,20 +212,33 @@
         function renderProducts() {
             db.collection('products').orderBy('createdAt', 'desc').onSnapshot(snap => {
                 const grid = document.getElementById('productGrid');
+                let filteredDocs = currentFilter === 'All' ? snap.docs : snap.docs.filter(d => d.data().category === currentFilter);
                 grid.innerHTML = '';
-                snap.docs.forEach(doc => {
+                filteredDocs.forEach(doc => {
                     const p = doc.data();
                     const card = document.createElement('div');
                     card.className = "product-card p-4 cursor-pointer";
                     card.onclick = () => openModal(doc.id, p.name, p.price, p.desc, p.image, p.category);
                     card.innerHTML = `
-                        <div class="h-64 overflow-hidden mb-4"><img src="${p.image}" class="w-full h-full object-cover"></div>
-                        <h4 class="brand-font text-md font-bold">${p.name}</h4>
-                        <p class="text-sm">₹${p.price}</p>
-                        ${isAdmin() ? `<button onclick="event.stopPropagation(); deleteProduct('${doc.id}')" class="mt-2 text-red-500 text-xs">Delete</button>` : ''}
+                        <div class="h-64 overflow-hidden mb-4 bg-gray-50 rounded"><img src="${p.image}" class="w-full h-full object-cover"></div>
+                        <div class="text-[9px] text-[#D4AF37] uppercase font-bold tracking-widest mb-1">${p.category}</div>
+                        <h4 class="brand-font text-md font-bold text-gray-800">${p.name}</h4>
+                        <p class="text-sm font-semibold">₹${p.price}</p>
+                        ${isAdmin() ? `<button onclick="event.stopPropagation(); deleteProduct('${doc.id}')" class="w-full mt-4 py-2 text-[10px] bg-red-50 text-red-500 rounded uppercase font-bold">Remove</button>` : ''}
                     `;
                     grid.appendChild(card);
                 });
+                
+                const urlParams = new URLSearchParams(window.location.search);
+                const productId = urlParams.get('id');
+                if (productId) {
+                    const foundDoc = snap.docs.find(d => d.id === productId);
+                    if (foundDoc) {
+                        const p = foundDoc.data();
+                        openModal(foundDoc.id, p.name, p.price, p.desc, p.image, p.category);
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    }
+                }
             });
         }
 
@@ -198,20 +249,18 @@
             document.getElementById('modalCat').innerText = cat;
             document.getElementById('modalName').innerText = name;
             document.getElementById('modalPrice').innerText = '₹' + price;
-            document.getElementById('modalDesc').innerText = desc || "";
+            document.getElementById('modalDesc').innerText = desc || "Handcrafted with traditional elegance.";
             const link = window.location.origin + window.location.pathname + "?id=" + id;
-            const msg = encodeURIComponent(`I am interested in: ${name}\nLink: ${link}`);
-            document.getElementById('whatsappBtn').onclick = () => window.open(`https://wa.me/918208059509?text=${msg}`);
+            const messageBody = `Namaste! I saw this on your website: \n\n*Item:* ${name} \n*Price:* ₹${price} \n\n*Link:* ${link}`;
+            document.getElementById('whatsappBtn').onclick = () => window.open(`https://wa.me/918208059509?text=${encodeURIComponent(messageBody)}`, '_blank');
             document.getElementById('productModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
         }
 
-        function closeModal() { document.getElementById('productModal').classList.add('hidden'); }
+        function closeModal() { document.getElementById('productModal').classList.add('hidden'); document.body.style.overflow = 'auto'; }
 
-        // THE FIX: Check for admin login status immediately on load
         window.addEventListener('DOMContentLoaded', () => {
-            if (isAdmin()) {
-                showPage('admin');
-            }
+            if (isAdmin()) showPage('admin');
             renderProducts();
         });
     </script>
