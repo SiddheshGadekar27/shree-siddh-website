@@ -64,15 +64,8 @@
             <div class="category-chip" onclick="filterCategory('Mangal Sutra Long', this)">Mangal Sutra Long</div>
             <div class="category-chip" onclick="filterCategory('Mangal Sutra Short', this)">Mangal Sutra Short</div>
             <div class="category-chip" onclick="filterCategory('Necklaces', this)">Necklaces</div>
-            <div class="category-chip" onclick="filterCategory('Invisible Necklaces', this)">Invisible Necklaces</div>
-            <div class="category-chip" onclick="filterCategory('Premium Necklaces', this)">Premium Necklaces</div>
-            <div class="category-chip" onclick="filterCategory('Sari', this)">Sari</div>
             <div class="category-chip" onclick="filterCategory('Bangles', this)">Bangles</div>
-            <div class="category-chip" onclick="filterCategory('Rings', this)">Rings</div>
-            <div class="category-chip" onclick="filterCategory('Earrings', this)">Earrings</div>
-            <div class="category-chip" onclick="filterCategory('Earcuffs', this)">Earcuffs</div>
             <div class="category-chip" onclick="filterCategory('Nath', this)">Nath</div>
-            <div class="category-chip" onclick="filterCategory('Bugdi', this)">Bugdi</div>
         </div>
 
         <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"></div>
@@ -125,7 +118,7 @@
                     <textarea id="pDesc" class="w-full p-4 border rounded h-24 outline-none"></textarea>
                 </div>
                 <div class="border-2 border-dashed p-6 rounded bg-gray-50 text-center">
-                    <p class="text-xs text-gray-500 mb-3">Product Photo (Auto-Compressed)</p>
+                    <p class="text-xs text-gray-500 mb-3">Product Photo</p>
                     <input type="file" id="pImage" accept="image/*" class="text-xs mx-auto">
                 </div>
                 <button onclick="uploadToFirebase()" id="uploadBtn" class="w-full gold-gradient text-white py-4 font-bold tracking-widest rounded shadow-lg">SAVE PRODUCT</button>
@@ -252,6 +245,19 @@
                     `;
                     grid.appendChild(card);
                 });
+                
+                // NEW: Check if there is an ID in the link after products load
+                const urlParams = new URLSearchParams(window.location.search);
+                const productId = urlParams.get('id');
+                if (productId) {
+                    const foundDoc = snap.docs.find(d => d.id === productId);
+                    if (foundDoc) {
+                        const p = foundDoc.data();
+                        openModal(foundDoc.id, p.name, p.price, p.desc, p.image, p.category);
+                        // Clean up the URL after opening so it doesn't pop up every time they refresh
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    }
+                }
             });
         }
 
@@ -264,9 +270,9 @@
             document.getElementById('modalPrice').innerText = '₹' + price;
             document.getElementById('modalDesc').innerText = desc || "Handcrafted with traditional elegance.";
             
-            // Detailed WhatsApp Message Restoration
+            // Generate link for WhatsApp
             const productLink = window.location.origin + window.location.pathname + "?id=" + id;
-            const messageBody = `Namaste Shree Siddh Kala Alankar! \n\nI saw this piece on your website: \n\n*Item:* ${name} \n*Category:* ${cat} \n*Price:* ₹${price} \n\n*Link:* ${productLink}`;
+            const messageBody = `Namaste Shree Siddh Kala Alankar! \n\nI saw this piece on your website: \n\n*Item:* ${name} \n*Price:* ₹${price} \n\n*Link:* ${productLink}`;
             const encodedMsg = encodeURIComponent(messageBody);
             
             document.getElementById('whatsappBtn').onclick = () => window.open(`https://wa.me/918208059509?text=${encodedMsg}`, '_blank');
