@@ -75,19 +75,7 @@
         <div class="max-w-4xl mx-auto text-center">
             <h2 class="text-3xl md:text-4xl mb-6 brand-font text-[#D4AF37]">Our Story</h2>
             <div class="w-16 h-[1px] bg-[#D4AF37] mx-auto mb-10"></div>
-            <div class="space-y-6 text-gray-600 leading-relaxed font-light">
-                <p>Welcome to <strong>Shree Siddh Kala Alankar</strong>, based in Nashik, specializing in 100% handcrafted jewelry.</p>
-                <div class="pt-10 grid md:grid-cols-2 gap-8 text-sm">
-                    <div class="p-6 bg-[#FCFBF4] rounded-lg border border-gray-100 flex flex-col items-center justify-center">
-                        <h4 class="font-bold text-[#D4AF37] mb-2 uppercase tracking-widest">Located At</h4>
-                        <p class="text-gray-800 font-medium">Nashik, Maharashtra, India</p>
-                    </div>
-                    <div class="p-6 bg-[#FCFBF4] rounded-lg border border-gray-100 flex flex-col items-center justify-center">
-                        <h4 class="font-bold text-[#D4AF37] mb-2 uppercase tracking-widest">Connect With Us</h4>
-                        <p class="font-bold text-gray-800 tracking-wider">+91 8208059509</p>
-                    </div>
-                </div>
-            </div>
+            <p>Welcome to <strong>Shree Siddh Kala Alankar</strong>, based in Nashik, specializing in 100% handcrafted jewelry.</p>
         </div>
     </section>
 
@@ -95,12 +83,8 @@
         <div class="max-w-xl mx-auto bg-white p-10 shadow-2xl rounded-lg border-t-4 border-[#D4AF37]">
             <h2 class="text-2xl mb-8 text-center brand-font font-bold text-[#D4AF37]">Admin Dashboard</h2>
             <div class="space-y-4">
-                <div>
-                    <label class="text-[10px] uppercase font-bold text-gray-400">Product Name</label>
-                    <input type="text" id="pName" class="w-full p-4 border rounded outline-none">
-                </div>
-                <div>
-                    <label class="text-[10px] uppercase font-bold text-gray-400">Category</label>
+                <div><label class="text-[10px] uppercase font-bold text-gray-400">Product Name</label><input type="text" id="pName" class="w-full p-4 border rounded outline-none"></div>
+                <div><label class="text-[10px] uppercase font-bold text-gray-400">Category</label>
                     <select id="pCategory" class="w-full p-4 border rounded bg-white outline-none">
                         <option value="Mangal Sutra Short">Mangal Sutra Short</option>
                         <option value="Mangal Sutra Long">Mangal Sutra Long</option>
@@ -109,20 +93,13 @@
                         <option value="Nath">Nath</option>
                     </select>
                 </div>
-                <div>
-                    <label class="text-[10px] uppercase font-bold text-gray-400">Price (₹)</label>
-                    <input type="number" id="pPrice" class="w-full p-4 border rounded outline-none">
-                </div>
-                <div>
-                    <label class="text-[10px] uppercase font-bold text-gray-400">Description</label>
-                    <textarea id="pDesc" class="w-full p-4 border rounded h-24 outline-none"></textarea>
-                </div>
+                <div><label class="text-[10px] uppercase font-bold text-gray-400">Price (₹)</label><input type="number" id="pPrice" class="w-full p-4 border rounded outline-none"></div>
+                <div><label class="text-[10px] uppercase font-bold text-gray-400">Description</label><textarea id="pDesc" class="w-full p-4 border rounded h-24 outline-none"></textarea></div>
                 <div class="border-2 border-dashed p-6 rounded bg-gray-50 text-center">
-                    <p class="text-xs text-gray-500 mb-3">Product Photo</p>
                     <input type="file" id="pImage" accept="image/*" class="text-xs mx-auto">
                 </div>
                 <button onclick="uploadToFirebase()" id="uploadBtn" class="w-full gold-gradient text-white py-4 font-bold tracking-widest rounded shadow-lg">SAVE PRODUCT</button>
-                <button onclick="logoutAdmin()" class="w-full text-xs text-gray-400 mt-6 underline">Exit Admin</button>
+                <button onclick="logoutAdmin()" class="w-full text-xs text-gray-400 mt-6 underline">Logout & Exit Admin</button>
             </div>
         </div>
     </section>
@@ -130,25 +107,19 @@
     <div id="productModal" class="hidden fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4">
         <div class="bg-white max-w-5xl w-full flex flex-col md:flex-row overflow-hidden rounded-sm relative max-h-[90vh] overflow-y-auto">
             <button onclick="closeModal()" class="absolute top-5 right-5 text-3xl hover:text-[#D4AF37] z-50">&times;</button>
-            <div class="md:w-1/2 bg-gray-50 h-[350px] md:h-auto">
-                <img id="modalImg" src="" class="w-full h-full object-contain p-6">
-            </div>
+            <div class="md:w-1/2 bg-gray-50 h-[350px] md:h-auto"><img id="modalImg" src="" class="w-full h-full object-contain p-6"></div>
             <div class="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
                 <div id="modalCat" class="text-[10px] uppercase tracking-widest text-[#D4AF37] mb-2 font-bold"></div>
                 <h2 id="modalName" class="text-3xl mb-2 brand-font font-bold"></h2>
                 <p id="modalPrice" class="text-2xl text-gray-800 mb-6"></p>
-                <div class="w-12 h-[1px] bg-gray-300 mb-6"></div>
                 <p id="modalDesc" class="text-gray-500 leading-relaxed mb-10 font-light"></p>
-                <button id="whatsappBtn" class="w-full bg-[#25D366] text-white py-5 rounded-full font-bold shadow-xl flex items-center justify-center gap-3">
-                    Inquire on WhatsApp
-                </button>
+                <button id="whatsappBtn" class="w-full bg-[#25D366] text-white py-5 rounded-full font-bold shadow-xl">Inquire on WhatsApp</button>
             </div>
         </div>
     </div>
 
     <script>
         const ADMIN_PASSWORD = "nashik123"; 
-        let isAdminLoggedIn = false;
         let currentFilter = 'All';
 
         const firebaseConfig = {
@@ -163,6 +134,11 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
+        // FIX: Check if admin is already logged in from a previous action
+        function isAdmin() {
+            return sessionStorage.getItem('adminAuth') === 'true';
+        }
+
         function showPage(id) {
             document.querySelectorAll('.content-section').forEach(s => s.classList.add('hidden-section'));
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-tab'));
@@ -173,14 +149,23 @@
         }
 
         function checkAdmin() {
-            if(isAdminLoggedIn) { showPage('admin'); } 
-            else {
+            if(isAdmin()) { 
+                showPage('admin'); 
+            } else {
                 const pass = prompt("Enter Admin Password:");
-                if(pass === ADMIN_PASSWORD) { isAdminLoggedIn = true; showPage('admin'); renderProducts(); }
+                if(pass === ADMIN_PASSWORD) { 
+                    sessionStorage.setItem('adminAuth', 'true'); 
+                    showPage('admin'); 
+                    renderProducts(); 
+                }
             }
         }
 
-        function logoutAdmin() { isAdminLoggedIn = false; showPage('home'); renderProducts(); }
+        function logoutAdmin() { 
+            sessionStorage.removeItem('adminAuth'); 
+            showPage('home'); 
+            renderProducts(); 
+        }
 
         function filterCategory(cat, el) {
             currentFilter = cat;
@@ -218,7 +203,9 @@
                     btn.innerText = "UPLOADING...";
                     try {
                         await db.collection('products').add({ name, category, price, desc, image: compressed, createdAt: Date.now() });
-                        alert("Added!"); location.reload();
+                        alert("Added Successfully!"); 
+                        // The page will reload, but the sessionStorage fix at the top will keep you logged in
+                        location.reload();
                     } catch (err) { alert(err.message); btn.innerText = "SAVE PRODUCT"; btn.disabled = false; }
                 };
             };
@@ -235,18 +222,15 @@
                     card.className = "product-card p-4 cursor-pointer";
                     card.onclick = () => openModal(doc.id, p.name, p.price, p.desc, p.image, p.category);
                     card.innerHTML = `
-                        <div class="h-64 overflow-hidden mb-4 bg-gray-50 rounded">
-                            <img src="${p.image}" class="w-full h-full object-cover">
-                        </div>
+                        <div class="h-64 overflow-hidden mb-4 bg-gray-50 rounded"><img src="${p.image}" class="w-full h-full object-cover"></div>
                         <div class="text-[9px] text-[#D4AF37] uppercase font-bold tracking-widest mb-1">${p.category}</div>
                         <h4 class="brand-font text-md font-bold text-gray-800">${p.name}</h4>
                         <p class="text-sm font-semibold">₹${p.price}</p>
-                        ${isAdminLoggedIn ? `<button onclick="event.stopPropagation(); deleteProduct('${doc.id}')" class="w-full mt-4 py-2 text-[10px] bg-red-50 text-red-500 rounded uppercase font-bold">Remove</button>` : ''}
+                        ${isAdmin() ? `<button onclick="event.stopPropagation(); deleteProduct('${doc.id}')" class="w-full mt-4 py-2 text-[10px] bg-red-50 text-red-500 rounded uppercase font-bold">Remove Product</button>` : ''}
                     `;
                     grid.appendChild(card);
                 });
                 
-                // NEW: Check if there is an ID in the link after products load
                 const urlParams = new URLSearchParams(window.location.search);
                 const productId = urlParams.get('id');
                 if (productId) {
@@ -254,14 +238,13 @@
                     if (foundDoc) {
                         const p = foundDoc.data();
                         openModal(foundDoc.id, p.name, p.price, p.desc, p.image, p.category);
-                        // Clean up the URL after opening so it doesn't pop up every time they refresh
                         window.history.replaceState({}, document.title, window.location.pathname);
                     }
                 }
             });
         }
 
-        async function deleteProduct(id) { if(confirm("Delete?")) await db.collection('products').doc(id).delete(); }
+        async function deleteProduct(id) { if(confirm("Delete this product permanently?")) await db.collection('products').doc(id).delete(); }
 
         function openModal(id, name, price, desc, img, cat) {
             document.getElementById('modalImg').src = img;
@@ -269,20 +252,20 @@
             document.getElementById('modalName').innerText = name;
             document.getElementById('modalPrice').innerText = '₹' + price;
             document.getElementById('modalDesc').innerText = desc || "Handcrafted with traditional elegance.";
-            
-            // Generate link for WhatsApp
             const productLink = window.location.origin + window.location.pathname + "?id=" + id;
             const messageBody = `Namaste Shree Siddh Kala Alankar! \n\nI saw this piece on your website: \n\n*Item:* ${name} \n*Price:* ₹${price} \n\n*Link:* ${productLink}`;
-            const encodedMsg = encodeURIComponent(messageBody);
-            
-            document.getElementById('whatsappBtn').onclick = () => window.open(`https://wa.me/918208059509?text=${encodedMsg}`, '_blank');
+            document.getElementById('whatsappBtn').onclick = () => window.open(`https://wa.me/918208059509?text=${encodeURIComponent(messageBody)}`, '_blank');
             document.getElementById('productModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
 
         function closeModal() { document.getElementById('productModal').classList.add('hidden'); document.body.style.overflow = 'auto'; }
 
-        renderProducts();
+        // Automatically go to admin page after refresh if previously logged in
+        window.onload = () => {
+            if(isAdmin()) showPage('admin');
+            renderProducts();
+        };
     </script>
 </body>
 </html>
