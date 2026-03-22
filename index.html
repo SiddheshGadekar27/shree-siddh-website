@@ -36,7 +36,7 @@
             <div class="flex space-x-8">
                 <span onclick="showPage('home')" id="link-home" class="nav-link active-tab">Home</span>
                 <span onclick="showPage('collection')" id="link-collection" class="nav-link">Collection</span>
-                <span onclick="checkAdmin()" id="link-admin" class="nav-link text-gray-300">Admin</span>
+                <span onclick="showPage('admin')" id="link-admin" class="nav-link text-gray-400" style="display: none;">Admin</span>
             </div>
         </div>
     </nav>
@@ -58,7 +58,6 @@
             <h2 class="text-4xl mb-2 gold-text brand-font">Our Masterpieces</h2>
             <div class="w-24 h-[1px] bg-[#D4AF37] mx-auto mb-8"></div>
         </div>
-
         <div class="flex overflow-x-auto pb-6 mb-12 gap-3 no-scrollbar justify-start md:justify-center" id="filterBar">
             <div class="category-chip active" onclick="filterCategory('All', this)">All</div>
             <div class="category-chip" onclick="filterCategory('Mangal Sutra Long', this)">Mangal Sutra Long</div>
@@ -74,7 +73,6 @@
             <div class="category-chip" onclick="filterCategory('Nath', this)">Nath</div>
             <div class="category-chip" onclick="filterCategory('Bugdi', this)">Bugdi</div>
         </div>
-
         <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"></div>
     </section>
 
@@ -83,7 +81,6 @@
             <h2 class="text-2xl mb-8 text-center brand-font font-bold text-[#D4AF37]">Admin Dashboard</h2>
             <div class="space-y-4">
                 <input type="text" id="pName" placeholder="Product Name" class="w-full p-4 border rounded outline-none">
-                
                 <select id="pCategory" class="w-full p-4 border rounded bg-white outline-none">
                     <option value="">-- Choose Category --</option>
                     <option value="Mangal Sutra Long">Mangal Sutra Long</option>
@@ -99,7 +96,6 @@
                     <option value="Nath">Nath</option>
                     <option value="Bugdi">Bugdi</option>
                 </select>
-
                 <input type="number" id="pPrice" placeholder="Price (₹)" class="w-full p-4 border rounded outline-none">
                 <textarea id="pDesc" placeholder="Product Description" class="w-full p-4 border rounded h-24 outline-none"></textarea>
                 <input type="file" id="pImage" accept="image/*" class="text-xs mx-auto">
@@ -123,6 +119,10 @@
         </div>
     </div>
 
+    <footer class="py-10 text-center opacity-20">
+        <span onclick="showPage('admin')" class="cursor-default text-[10px]">© 2024 Shree Siddh Kala Alankar</span>
+    </footer>
+
     <script>
         const ADMIN_PASSWORD = "nashik123"; 
         let currentFilter = 'All';
@@ -143,28 +143,34 @@
             return localStorage.getItem('isSiddhAdmin') === 'true';
         }
 
+        // MODIFIED: Combined page switching with security checks
         function showPage(id) {
-            document.querySelectorAll('.content-section').forEach(s => s.classList.add('hidden-section'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-tab'));
-            document.getElementById('page-'+id).classList.remove('hidden-section');
-            document.getElementById('link-'+id).classList.add('active-tab');
-        }
-
-        function checkAdmin() {
-            if(isAdmin()) { showPage('admin'); } 
-            else {
+            if(id === 'admin' && !isAdmin()) {
                 const pass = prompt("Enter Admin Password:");
-                if(pass === ADMIN_PASSWORD) { 
-                    localStorage.setItem('isSiddhAdmin', 'true'); 
-                    showPage('admin');
-                    renderProducts();
+                if(pass === ADMIN_PASSWORD) {
+                    localStorage.setItem('isSiddhAdmin', 'true');
+                    document.getElementById('link-admin').style.display = 'inline-block';
+                } else {
+                    alert("Incorrect Password");
+                    return;
                 }
             }
+
+            document.querySelectorAll('.content-section').forEach(s => s.classList.add('hidden-section'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-tab'));
+            
+            const targetPage = document.getElementById('page-'+id);
+            const targetLink = document.getElementById('link-'+id);
+            
+            if(targetPage) targetPage.classList.remove('hidden-section');
+            if(targetLink) targetLink.classList.add('active-tab');
+            
+            if(id === 'admin') renderProducts();
         }
 
         function logoutAdmin() {
             localStorage.removeItem('isSiddhAdmin');
-            location.reload();
+            window.location.href = window.location.pathname; // Hard refresh to Home
         }
 
         function filterCategory(cat, el) {
@@ -204,7 +210,7 @@
                         await db.collection('products').add({ name, category, price, desc, image: compressed, createdAt: Date.now() });
                         alert("Added Successfully!");
                         location.reload();
-                    } catch (err) { alert(err.message); btn.innerText = "SAVE"; btn.disabled = false; }
+                    } catch (err) { alert(err.message); btn.innerText = "SAVE PRODUCT"; btn.disabled = false; }
                 };
             };
         }
@@ -228,21 +234,10 @@
                     `;
                     grid.appendChild(card);
                 });
-                
-                const urlParams = new URLSearchParams(window.location.search);
-                const productId = urlParams.get('id');
-                if (productId) {
-                    const foundDoc = snap.docs.find(d => d.id === productId);
-                    if (foundDoc) {
-                        const p = foundDoc.data();
-                        openModal(foundDoc.id, p.name, p.price, p.desc, p.image, p.category);
-                        window.history.replaceState({}, document.title, window.location.pathname);
-                    }
-                }
             });
         }
 
-        async function deleteProduct(id) { if(confirm("Delete?")) await db.collection('products').doc(id).delete(); }
+        async function deleteProduct(id) { if(confirm("Delete product?")) await db.collection('products').doc(id).delete(); }
 
         function openModal(id, name, price, desc, img, cat) {
             document.getElementById('modalImg').src = img;
@@ -259,8 +254,12 @@
 
         function closeModal() { document.getElementById('productModal').classList.add('hidden'); document.body.style.overflow = 'auto'; }
 
+        // MODIFIED: Ensure site starts on HOME for everyone
         window.addEventListener('DOMContentLoaded', () => {
-            if (isAdmin()) showPage('admin');
+            showPage('home'); 
+            if (isAdmin()) {
+                document.getElementById('link-admin').style.display = 'inline-block';
+            }
             renderProducts();
         });
     </script>
