@@ -23,9 +23,6 @@
         .product-card { transition: 0.4s; border: 1px solid transparent; background: white; border-radius: 8px; overflow: hidden; }
         .product-card:hover { border-color: var(--gold); transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-
-        @keyframes shimmer { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-        .skeleton { background: #eee; animation: shimmer 1.5s infinite; }
     </style>
 </head>
 <body>
@@ -126,15 +123,18 @@
                 </select>
                 <input type="number" id="pPrice" placeholder="Price (₹)" class="w-full p-4 border rounded outline-none">
                 <textarea id="pDesc" placeholder="Product Description" class="w-full p-4 border rounded h-24 outline-none"></textarea>
+                
                 <div id="imageInputGroup">
-                    <p class="text-[10px] text-gray-400 mb-1">Upload Image</p>
+                    <p class="text-[10px] text-gray-400 mb-1">Upload Image (Only for New Products)</p>
                     <input type="file" id="pImage" accept="image/*" class="text-xs mx-auto">
                 </div>
+
                 <div class="flex gap-2">
                     <button onclick="uploadToFirebase()" id="uploadBtn" class="w-full gold-gradient text-white py-4 font-bold rounded shadow-lg uppercase tracking-widest">Save Product</button>
                     <button onclick="updateProduct()" id="updateBtn" class="hidden w-full bg-blue-600 text-white py-4 font-bold rounded shadow-lg uppercase tracking-widest">Update Product</button>
                 </div>
                 <button id="cancelEdit" onclick="resetAdminForm()" class="hidden w-full text-xs text-red-500 mt-2 underline">Cancel Edit Mode</button>
+                
                 <button onclick="logoutAdmin()" class="w-full text-xs text-gray-400 mt-10 underline">Logout & Exit Admin</button>
             </div>
         </div>
@@ -158,6 +158,7 @@
         <div class="max-w-7xl mx-auto">
             <h3 class="brand-font text-lg text-[#D4AF37] mb-2 uppercase">Shree Siddh Kala Alankar</h3>
             <p class="text-gray-400 text-[10px] tracking-[0.4em] mb-8">NASHIK | MAHARASHTRA</p>
+            <div class="w-12 h-[1px] bg-gray-200 mx-auto mb-8"></div>
             <p onclick="showPage('admin')" class="text-[10px] text-gray-300 cursor-default select-none tracking-widest">
                 © 2025 SHREE SIDDH KALA ALANKAR. ALL RIGHTS RESERVED.
             </p>
@@ -183,13 +184,6 @@
 
         function isAdmin() { return localStorage.getItem('isSiddhAdmin') === 'true'; }
 
-        function showSkeletons() {
-            const grid = document.getElementById('productGrid');
-            if (grid && grid.innerHTML === '') {
-                grid.innerHTML = '<div class="skeleton h-64 rounded"></div>'.repeat(4);
-            }
-        }
-
         function showPage(id) {
             if(id === 'admin' && !isAdmin()) {
                 const pass = prompt("Enter Admin Password:");
@@ -208,33 +202,16 @@
             if(id === 'admin' || id === 'collection') renderProducts();
         }
 
-        function renderProducts() {
-            const grid = document.getElementById('productGrid');
-            if (!grid) return;
-            
-            showSkeletons();
+        function logoutAdmin() { localStorage.removeItem('isSiddhAdmin'); window.location.reload(); }
 
-            db.collection('products').orderBy('createdAt', 'desc').onSnapshot(snap => {
-                let filteredDocs = currentFilter === 'All' ? snap.docs : snap.docs.filter(d => d.data().category === currentFilter);
-                grid.innerHTML = '';
-                filteredDocs.forEach(doc => {
-                    const p = doc.data();
-                    const card = document.createElement('div');
-                    card.className = "product-card p-4 cursor-pointer";
-                    card.onclick = () => openModal(doc.id, p.name, p.price, p.desc, p.image, p.category);
-                    card.innerHTML = `
-                        <div class="h-64 overflow-hidden mb-4 bg-gray-50 rounded"><img src="${p.image}" class="w-full h-full object-cover" loading="lazy"></div>
-                        <div class="text-[9px] text-[#D4AF37] uppercase font-bold tracking-widest mb-1">${p.category}</div>
-                        <h4 class="brand-font text-md font-bold text-gray-800">${p.name}</h4>
-                        <p class="text-sm font-semibold">₹${p.price}</p>
-                        ${isAdmin() ? `<div class="grid grid-cols-2 gap-2 mt-4"><button onclick="event.stopPropagation(); editProduct('${doc.id}')" class="py-2 text-[10px] bg-blue-50 text-blue-600 rounded uppercase font-bold">Edit</button><button onclick="event.stopPropagation(); deleteProduct('${doc.id}')" class="py-2 text-[10px] bg-red-50 text-red-500 rounded uppercase font-bold">Remove</button></div>` : ''}
-                    `;
-                    grid.appendChild(card);
-                });
-            });
+        function filterCategory(cat, el) {
+            currentFilter = cat;
+            document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            renderProducts();
         }
 
-        // Rest of your original Admin Logic
+        // --- EDIT LOGIC ---
         async function editProduct(id) {
             const doc = await db.collection('products').doc(id).get();
             const p = doc.data();
@@ -307,6 +284,34 @@
             };
         }
 
+        function renderProducts() {
+            db.collection('products').orderBy('createdAt', 'desc').onSnapshot(snap => {
+                const grid = document.getElementById('productGrid');
+                if (!grid) return;
+                let filteredDocs = currentFilter === 'All' ? snap.docs : snap.docs.filter(d => d.data().category === currentFilter);
+                grid.innerHTML = '';
+                filteredDocs.forEach(doc => {
+                    const p = doc.data();
+                    const card = document.createElement('div');
+                    card.className = "product-card p-4 cursor-pointer";
+                    card.onclick = () => openModal(doc.id, p.name, p.price, p.desc, p.image, p.category);
+                    card.innerHTML = `
+                        <div class="h-64 overflow-hidden mb-4 bg-gray-50 rounded"><img src="${p.image}" class="w-full h-full object-cover"></div>
+                        <div class="text-[9px] text-[#D4AF37] uppercase font-bold tracking-widest mb-1">${p.category}</div>
+                        <h4 class="brand-font text-md font-bold text-gray-800">${p.name}</h4>
+                        <p class="text-sm font-semibold">₹${p.price}</p>
+                        ${isAdmin() ? `
+                            <div class="grid grid-cols-2 gap-2 mt-4">
+                                <button onclick="event.stopPropagation(); editProduct('${doc.id}')" class="py-2 text-[10px] bg-blue-50 text-blue-600 rounded uppercase font-bold">Edit</button>
+                                <button onclick="event.stopPropagation(); deleteProduct('${doc.id}')" class="py-2 text-[10px] bg-red-50 text-red-500 rounded uppercase font-bold">Remove</button>
+                            </div>
+                        ` : ''}
+                    `;
+                    grid.appendChild(card);
+                });
+            });
+        }
+
         async function deleteProduct(id) { if(confirm("Delete product?")) await db.collection('products').doc(id).delete(); }
 
         function openModal(id, name, price, desc, img, cat) {
@@ -315,8 +320,10 @@
             document.getElementById('modalName').innerText = name;
             document.getElementById('modalPrice').innerText = '₹' + price;
             document.getElementById('modalDesc').innerText = desc || "Handcrafted with traditional elegance.";
+            
             const productLink = `${window.location.origin}${window.location.pathname}?id=${id}`;
             const messageBody = `Namaste Shree Siddh Kala Alankar! \n\nI saw this piece on your website: \n\n*Item:* ${name} \n*Price:* ₹${price} \n\n*Link:* ${productLink}`;
+
             document.getElementById('whatsappBtn').onclick = () => window.open(`https://wa.me/918208059509?text=${encodeURIComponent(messageBody)}`, '_blank');
             document.getElementById('productModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
@@ -340,15 +347,6 @@
                 }
             }
         }
-
-        function filterCategory(cat, el) {
-            currentFilter = cat;
-            document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            renderProducts();
-        }
-
-        function logoutAdmin() { localStorage.removeItem('isSiddhAdmin'); window.location.reload(); }
 
         window.addEventListener('DOMContentLoaded', () => {
             showPage('home'); 
