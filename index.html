@@ -23,9 +23,21 @@
         .product-card { transition: 0.4s; border: 1px solid transparent; background: white; border-radius: 8px; overflow: hidden; }
         .product-card:hover { border-color: var(--gold); transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-
-        @keyframes shimmer { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-        .skeleton { background: #eee; animation: shimmer 1.5s infinite; }
+        
+        /* SHIMMER EFFECT */
+        @keyframes shimmer {
+            0% { background-position: -468px 0; }
+            100% { background-position: 468px 0; }
+        }
+        .skeleton {
+            background: #f6f7f8;
+            background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+            background-repeat: no-repeat;
+            background-size: 800px 104px;
+            display: inline-block;
+            position: relative;
+            animation: shimmer 1.2s infinite linear;
+        }
     </style>
 </head>
 <body>
@@ -59,11 +71,9 @@
             <div class="max-w-4xl mx-auto text-center">
                 <h2 class="text-3xl md:text-4xl mb-6 brand-font text-[#D4AF37]">Our Story</h2>
                 <div class="w-16 h-[1px] bg-[#D4AF37] mx-auto mb-10"></div>
-                
                 <div class="space-y-6 text-gray-600 leading-relaxed font-light">
                     <p> Welcome to <span class="font-semibold text-gray-800">Shree Siddh Kala Alankar</span>, where we breathe life into the timeless traditions of Maharashtrian heritage. Based in the historic city of Nashik, we specialize in the meticulous creation of 100% handcrafted jewelry that captures the royal essence of our culture.</p>
                     <p> Founded and curated by <span class="font-medium text-gray-800">Sheetal Gadekar</span> and managed by <span class="font-medium text-gray-800">Siddhesh Gadekar</span>, our collection is more than just ornament—it is a tribute to the craftsmanship passed down through generations. From the intricate detail of a Peshwai Nath to the graceful strength of a Mangalsutra, every piece is crafted with passion, precision, and the finest materials.</p>
-                    
                     <div class="pt-10 grid md:grid-cols-2 gap-8 text-sm">
                         <div class="p-6 bg-[#FCFBF4] rounded-lg border border-gray-100 flex flex-col items-center justify-center">
                             <h4 class="font-bold text-[#D4AF37] mb-2 uppercase tracking-widest">Located At</h4>
@@ -101,7 +111,8 @@
             <div class="category-chip" onclick="filterCategory('Nath', this)">Nath</div>
             <div class="category-chip" onclick="filterCategory('Bugdi', this)">Bugdi</div>
         </div>
-        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"></div>
+        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            </div>
     </section>
 
     <section id="page-admin" class="content-section hidden-section py-20 px-6">
@@ -164,215 +175,224 @@
         </div>
     </footer>
 
-<script>
-    const ADMIN_PASSWORD = "nashik123"; 
-    let currentFilter = 'All';
-    let editId = null;
+    <script>
+        const ADMIN_PASSWORD = "nashik123"; 
+        let currentFilter = 'All';
+        let editId = null;
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAf9oBIC7SlWFR2467xHBh3iQ2Mdejua-8",
-        authDomain: "shreesiddhkala-d393c.firebaseapp.com",
-        projectId: "shreesiddhkala-d393c",
-        storageBucket: "shreesiddhkala-d393c.firebasestorage.app",
-        messagingSenderId: "453855024328",
-        appId: "1:453855024328:web:d5ab9bae2de6c8a7fe01fd"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    function isAdmin() { return localStorage.getItem('isSiddhAdmin') === 'true'; }
-
-    // THIS IS THE "INSTANT LOAD" TRICK
-    function renderProducts() {
-        const grid = document.getElementById('productGrid');
-        if (!grid) return;
-
-        // 1. If it's the first time ever, show the shimmering skeletons
-        if (grid.innerHTML === '') {
-            grid.innerHTML = '<div class="skeleton h-64 rounded"></div>'.repeat(4);
-        }
-
-        // 2. CHECK PHONE STORAGE: If user visited before, show products INSTANTLY
-        const cached = localStorage.getItem('ssk_master_cache');
-        if (cached && currentFilter === 'All') {
-            const products = JSON.parse(cached);
-            displayUI(products); // Products appear in 0 seconds
-        }
-
-        // 3. BACKGROUND UPDATE: Get fresh data from Firebase without making the user wait
-        db.collection('products').orderBy('createdAt', 'desc').onSnapshot(snap => {
-            const products = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            
-            // Save to phone for next time
-            localStorage.setItem('ssk_master_cache', JSON.stringify(products));
-            
-            // Filter and show the most fresh data
-            let filtered = currentFilter === 'All' ? products : products.filter(p => p.category === currentFilter);
-            displayUI(filtered);
-        }, (error) => {
-            console.error("Firebase error:", error);
-        });
-    }
-
-    function displayUI(products) {
-        const grid = document.getElementById('productGrid');
-        grid.innerHTML = '';
-        products.forEach(p => {
-            const card = document.createElement('div');
-            card.className = "product-card p-4 cursor-pointer";
-            card.onclick = () => openModal(p.id, p.name, p.price, p.desc, p.image, p.category);
-            card.innerHTML = `
-                <div class="h-64 overflow-hidden mb-4 bg-gray-50 rounded"><img src="${p.image}" class="w-full h-full object-cover" loading="lazy"></div>
-                <div class="text-[9px] text-[#D4AF37] uppercase font-bold tracking-widest mb-1">${p.category}</div>
-                <h4 class="brand-font text-md font-bold text-gray-800">${p.name}</h4>
-                <p class="text-sm font-semibold">₹${p.price}</p>
-                ${isAdmin() ? `<div class="grid grid-cols-2 gap-2 mt-4"><button onclick="event.stopPropagation(); editProduct('${p.id}')" class="py-2 text-[10px] bg-blue-50 text-blue-600 rounded uppercase font-bold">Edit</button><button onclick="event.stopPropagation(); deleteProduct('${p.id}')" class="py-2 text-[10px] bg-red-50 text-red-500 rounded uppercase font-bold">Remove</button></div>` : ''}
-            `;
-            grid.appendChild(card);
-        });
-    }
-
-    // --- ALL YOUR ORIGINAL FUNCTIONS (NO CHANGES BELOW THIS LINE) ---
-    async function editProduct(id) {
-        const doc = await db.collection('products').doc(id).get();
-        const p = doc.data();
-        editId = id;
-        document.getElementById('pName').value = p.name;
-        document.getElementById('pCategory').value = p.category;
-        document.getElementById('pPrice').value = p.price;
-        document.getElementById('pDesc').value = p.desc;
-        document.getElementById('imageInputGroup').classList.add('hidden');
-        document.getElementById('uploadBtn').classList.add('hidden');
-        document.getElementById('updateBtn').classList.remove('hidden');
-        document.getElementById('cancelEdit').classList.remove('hidden');
-        window.scrollTo(0,0);
-    }
-
-    async function updateProduct() {
-        const btn = document.getElementById('updateBtn');
-        btn.innerText = "UPDATING..."; btn.disabled = true;
-        try {
-            await db.collection('products').doc(editId).update({
-                name: document.getElementById('pName').value,
-                category: document.getElementById('pCategory').value,
-                price: document.getElementById('pPrice').value,
-                desc: document.getElementById('pDesc').value
-            });
-            alert("Updated!"); resetAdminForm(); renderProducts();
-        } catch(e) { alert(e.message); }
-        btn.innerText = "Update Product"; btn.disabled = false;
-    }
-
-    function resetAdminForm() {
-        editId = null;
-        document.getElementById('pName').value = '';
-        document.getElementById('pPrice').value = '';
-        document.getElementById('pDesc').value = '';
-        document.getElementById('imageInputGroup').classList.remove('hidden');
-        document.getElementById('uploadBtn').classList.remove('hidden');
-        document.getElementById('updateBtn').classList.add('hidden');
-        document.getElementById('cancelEdit').classList.add('hidden');
-    }
-
-    function uploadToFirebase() {
-        const name = document.getElementById('pName').value;
-        const category = document.getElementById('pCategory').value;
-        const price = document.getElementById('pPrice').value;
-        const desc = document.getElementById('pDesc').value;
-        const file = document.getElementById('pImage').files[0];
-        const btn = document.getElementById('uploadBtn');
-        if(!name || !category || !price || !file) return alert("Fill all details.");
-        btn.innerText = "COMPRESSING..."; btn.disabled = true;
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = function(e) {
-            const img = new Image();
-            img.src = e.target.result;
-            img.onload = async function() {
-                const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 1200;
-                let width = img.width, height = img.height;
-                if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
-                canvas.width = width; canvas.height = height;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
-                const compressed = canvas.toDataURL('image/jpeg', 0.7);
-                try {
-                    await db.collection('products').add({ name, category, price, desc, image: compressed, createdAt: Date.now() });
-                    alert("Added Successfully!"); location.reload();
-                } catch (err) { alert(err.message); btn.innerText = "SAVE PRODUCT"; btn.disabled = false; }
-            };
+        const firebaseConfig = {
+            apiKey: "AIzaSyAf9oBIC7SlWFR2467xHBh3iQ2Mdejua-8",
+            authDomain: "shreesiddhkala-d393c.firebaseapp.com",
+            projectId: "shreesiddhkala-d393c",
+            storageBucket: "shreesiddhkala-d393c.firebasestorage.app",
+            messagingSenderId: "453855024328",
+            appId: "1:453855024328:web:d5ab9bae2de6c8a7fe01fd"
         };
-    }
 
-    async function deleteProduct(id) { if(confirm("Delete product?")) await db.collection('products').doc(id).delete(); }
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-    function openModal(id, name, price, desc, img, cat) {
-        document.getElementById('modalImg').src = img;
-        document.getElementById('modalCat').innerText = cat;
-        document.getElementById('modalName').innerText = name;
-        document.getElementById('modalPrice').innerText = '₹' + price;
-        document.getElementById('modalDesc').innerText = desc || "Handcrafted with traditional elegance.";
-        const productLink = `${window.location.origin}${window.location.pathname}?id=${id}`;
-        const messageBody = `Namaste Shree Siddh Kala Alankar! \n\nI saw this piece on your website: \n\n*Item:* ${name} \n*Price:* ₹${price} \n\n*Link:* ${productLink}`;
-        document.getElementById('whatsappBtn').onclick = () => window.open(`https://wa.me/918208059509?text=${encodeURIComponent(messageBody)}`, '_blank');
-        document.getElementById('productModal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-        window.history.pushState({}, '', productLink);
-    }
+        function isAdmin() { return localStorage.getItem('isSiddhAdmin') === 'true'; }
 
-    function closeModal() { 
-        document.getElementById('productModal').classList.add('hidden'); 
-        document.body.style.overflow = 'auto';
-        window.history.pushState({}, '', window.location.origin + window.location.pathname);
-    }
+        // Inject Shimmering Skeletons
+        function injectSkeletons() {
+            const grid = document.getElementById('productGrid');
+            let skeletons = '';
+            for(let i=0; i<8; i++) {
+                skeletons += `
+                    <div class="p-4">
+                        <div class="skeleton w-full h-64 rounded mb-4"></div>
+                        <div class="skeleton w-1/4 h-3 mb-2"></div>
+                        <div class="skeleton w-3/4 h-5"></div>
+                    </div>`;
+            }
+            grid.innerHTML = skeletons;
+        }
 
-    async function checkDeepLink() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const productId = urlParams.get('id');
-        if (productId) {
-            const doc = await db.collection('products').doc(productId).get();
-            if (doc.exists) {
-                const p = doc.data();
-                openModal(doc.id, p.name, p.price, p.desc, p.image, p.category);
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            if (!grid) return;
+            
+            // Show Shimmer while fetching
+            injectSkeletons();
+
+            db.collection('products').orderBy('createdAt', 'desc').onSnapshot(snap => {
+                let products = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                // Save to local storage for "instant load" next time
+                localStorage.setItem('ssk_local_data', JSON.stringify(products));
+
+                updateDisplay(products);
+            });
+        }
+
+        function updateDisplay(products) {
+            const grid = document.getElementById('productGrid');
+            let filtered = currentFilter === 'All' ? products : products.filter(p => p.category === currentFilter);
+            
+            grid.innerHTML = ''; 
+            filtered.forEach(p => {
+                const card = document.createElement('div');
+                card.className = "product-card p-4 cursor-pointer";
+                card.onclick = () => openModal(p.id, p.name, p.price, p.desc, p.image, p.category);
+                card.innerHTML = `
+                    <div class="h-64 overflow-hidden mb-4 bg-gray-50 rounded"><img src="${p.image}" class="w-full h-full object-cover" loading="lazy"></div>
+                    <div class="text-[9px] text-[#D4AF37] uppercase font-bold tracking-widest mb-1">${p.category}</div>
+                    <h4 class="brand-font text-md font-bold text-gray-800">${p.name}</h4>
+                    <p class="text-sm font-semibold">₹${p.price}</p>
+                    ${isAdmin() ? `<div class="grid grid-cols-2 gap-2 mt-4"><button onclick="event.stopPropagation(); editProduct('${p.id}')" class="py-2 text-[10px] bg-blue-50 text-blue-600 rounded uppercase font-bold">Edit</button><button onclick="event.stopPropagation(); deleteProduct('${p.id}')" class="py-2 text-[10px] bg-red-50 text-red-500 rounded uppercase font-bold">Remove</button></div>` : ''}
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function showPage(id) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.add('hidden-section'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-tab'));
+            
+            if(id === 'admin' && !isAdmin()) {
+                const pass = prompt("Enter Admin Password:");
+                if(pass === ADMIN_PASSWORD) {
+                    localStorage.setItem('isSiddhAdmin', 'true');
+                    document.getElementById('link-admin').style.display = 'inline-block';
+                } else { alert("Incorrect Password"); return; }
+            }
+
+            const targetPage = document.getElementById('page-'+id);
+            const targetLink = document.getElementById('link-'+id);
+            if(targetPage) targetPage.classList.remove('hidden-section');
+            if(targetLink) targetLink.classList.add('active-tab');
+            window.scrollTo(0,0);
+            
+            if(id === 'collection') {
+                // If we have local data, show it immediately before fetching new data
+                const local = localStorage.getItem('ssk_local_data');
+                if(local) updateDisplay(JSON.parse(local));
+                renderProducts(); 
             }
         }
-    }
 
-    function showPage(id) {
-        if(id === 'admin' && !isAdmin()) {
-            const pass = prompt("Enter Admin Password:");
-            if(pass === ADMIN_PASSWORD) {
-                localStorage.setItem('isSiddhAdmin', 'true');
-                document.getElementById('link-admin').style.display = 'inline-block';
-            } else { alert("Incorrect Password"); return; }
+        function filterCategory(cat, el) {
+            currentFilter = cat;
+            document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            const local = localStorage.getItem('ssk_local_data');
+            if(local) updateDisplay(JSON.parse(local));
         }
-        document.querySelectorAll('.content-section').forEach(s => s.classList.add('hidden-section'));
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-tab'));
-        const targetPage = document.getElementById('page-'+id);
-        const targetLink = document.getElementById('link-'+id);
-        if(targetPage) targetPage.classList.remove('hidden-section');
-        if(targetLink) targetLink.classList.add('active-tab');
-        window.scrollTo(0,0);
-        if(id === 'admin' || id === 'collection') renderProducts();
-    }
 
-    function filterCategory(cat, el) {
-        currentFilter = cat;
-        document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
-        el.classList.add('active');
-        renderProducts();
-    }
+        // --- All Original Admin Functions ---
+        async function editProduct(id) {
+            const doc = await db.collection('products').doc(id).get();
+            const p = doc.data();
+            editId = id;
+            document.getElementById('pName').value = p.name;
+            document.getElementById('pCategory').value = p.category;
+            document.getElementById('pPrice').value = p.price;
+            document.getElementById('pDesc').value = p.desc;
+            document.getElementById('imageInputGroup').classList.add('hidden');
+            document.getElementById('uploadBtn').classList.add('hidden');
+            document.getElementById('updateBtn').classList.remove('hidden');
+            document.getElementById('cancelEdit').classList.remove('hidden');
+            window.scrollTo(0,0);
+        }
 
-    function logoutAdmin() { localStorage.removeItem('isSiddhAdmin'); window.location.reload(); }
+        async function updateProduct() {
+            const btn = document.getElementById('updateBtn');
+            btn.innerText = "UPDATING..."; btn.disabled = true;
+            try {
+                await db.collection('products').doc(editId).update({
+                    name: document.getElementById('pName').value,
+                    category: document.getElementById('pCategory').value,
+                    price: document.getElementById('pPrice').value,
+                    desc: document.getElementById('pDesc').value
+                });
+                alert("Updated!"); resetAdminForm(); renderProducts();
+            } catch(e) { alert(e.message); }
+            btn.innerText = "Update Product"; btn.disabled = false;
+        }
 
-    window.addEventListener('DOMContentLoaded', () => {
-        showPage('home'); 
-        if (isAdmin()) { document.getElementById('link-admin').style.display = 'inline-block'; }
-        renderProducts();
-        checkDeepLink();
-    });
-</script>
+        function resetAdminForm() {
+            editId = null;
+            document.getElementById('pName').value = '';
+            document.getElementById('pPrice').value = '';
+            document.getElementById('pDesc').value = '';
+            document.getElementById('imageInputGroup').classList.remove('hidden');
+            document.getElementById('uploadBtn').classList.remove('hidden');
+            document.getElementById('updateBtn').classList.add('hidden');
+            document.getElementById('cancelEdit').classList.add('hidden');
+        }
+
+        function uploadToFirebase() {
+            const name = document.getElementById('pName').value;
+            const category = document.getElementById('pCategory').value;
+            const price = document.getElementById('pPrice').value;
+            const desc = document.getElementById('pDesc').value;
+            const file = document.getElementById('pImage').files[0];
+            const btn = document.getElementById('uploadBtn');
+            if(!name || !category || !price || !file) return alert("Fill all details.");
+            btn.innerText = "UPLOADING..."; btn.disabled = true;
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(e) {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = async function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 1200;
+                    let width = img.width, height = img.height;
+                    if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                    canvas.width = width; canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const compressed = canvas.toDataURL('image/jpeg', 0.7);
+                    try {
+                        await db.collection('products').add({ name, category, price, desc, image: compressed, createdAt: Date.now() });
+                        alert("Added Successfully!"); location.reload();
+                    } catch (err) { alert(err.message); btn.innerText = "SAVE PRODUCT"; btn.disabled = false; }
+                };
+            };
+        }
+
+        async function deleteProduct(id) { if(confirm("Delete product?")) await db.collection('products').doc(id).delete(); }
+
+        function openModal(id, name, price, desc, img, cat) {
+            document.getElementById('modalImg').src = img;
+            document.getElementById('modalCat').innerText = cat;
+            document.getElementById('modalName').innerText = name;
+            document.getElementById('modalPrice').innerText = '₹' + price;
+            document.getElementById('modalDesc').innerText = desc || "Handcrafted with traditional elegance.";
+            const productLink = `${window.location.origin}${window.location.pathname}?id=${id}`;
+            document.getElementById('whatsappBtn').onclick = () => window.open(`https://wa.me/918208059509?text=Inquiry: ${name}`, '_blank');
+            document.getElementById('productModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            window.history.pushState({}, '', productLink);
+        }
+
+        function closeModal() { 
+            document.getElementById('productModal').classList.add('hidden'); 
+            document.body.style.overflow = 'auto';
+            window.history.pushState({}, '', window.location.origin + window.location.pathname);
+        }
+
+        async function checkDeepLink() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            if (productId) {
+                const doc = await db.collection('products').doc(productId).get();
+                if (doc.exists) {
+                    const p = doc.data();
+                    openModal(doc.id, p.name, p.price, p.desc, p.image, p.category);
+                }
+            }
+        }
+
+        function logoutAdmin() { localStorage.removeItem('isSiddhAdmin'); window.location.reload(); }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            showPage('home'); 
+            if (isAdmin()) { document.getElementById('link-admin').style.display = 'inline-block'; }
+            checkDeepLink();
+        });
+    </script>
 </body>
 </html>
