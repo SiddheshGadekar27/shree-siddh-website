@@ -135,6 +135,12 @@
                 </div>
                 <button id="cancelEdit" onclick="resetAdminForm()" class="hidden w-full text-xs text-red-500 mt-2 underline">Cancel Edit Mode</button>
                 
+                <div class="border-t pt-8 mt-8 border-gray-100">
+                    <p class="text-[10px] text-gray-400 mb-2 uppercase tracking-widest font-bold">Bulk Upload (JSON File)</p>
+                    <input type="file" id="pJsonFile" accept=".json" class="text-xs mb-4">
+                    <button onclick="handleJsonUpload()" id="jsonUploadBtn" class="w-full bg-gray-800 text-white py-3 font-bold rounded shadow uppercase tracking-widest text-[10px]">Upload JSON Collection</button>
+                </div>
+
                 <button onclick="logoutAdmin()" class="w-full text-xs text-gray-400 mt-10 underline">Logout & Exit Admin</button>
             </div>
         </div>
@@ -278,10 +284,47 @@
             document.getElementById('pName').value = '';
             document.getElementById('pPrice').value = '';
             document.getElementById('pDesc').value = '';
+            document.getElementById('pImage').value = ''; // Reset file input
             document.getElementById('imageInputGroup').classList.remove('hidden');
             document.getElementById('uploadBtn').classList.remove('hidden');
             document.getElementById('updateBtn').classList.add('hidden');
             document.getElementById('cancelEdit').classList.add('hidden');
+        }
+
+        async function handleJsonUpload() {
+            const file = document.getElementById('pJsonFile').files[0];
+            const btn = document.getElementById('jsonUploadBtn');
+            if(!file) return alert("Please select a JSON file.");
+            
+            btn.innerText = "UPLOADING..."; btn.disabled = true;
+            const reader = new FileReader();
+            reader.readAsText(file);
+            reader.onload = async function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if(!Array.isArray(data)) throw new Error("JSON must be an array of products.");
+                    
+                    let count = 0;
+                    for(const item of data) {
+                        if(!item.name || !item.category || !item.image) continue;
+                        await db.collection('products').add({
+                            name: item.name,
+                            category: item.category,
+                            price: item.price || "00",
+                            desc: item.desc || "",
+                            image: item.image,
+                            createdAt: item.createdAt || Date.now()
+                        });
+                        count++;
+                    }
+                    alert(`Successfully added ${count} products!`);
+                    location.reload();
+                } catch(err) {
+                    alert("Error: " + err.message);
+                } finally {
+                    btn.innerText = "Upload JSON Collection"; btn.disabled = false;
+                }
+            };
         }
 
         function uploadToFirebase() {
@@ -398,4 +441,3 @@
     </script>
 </body>
 </html>
-
