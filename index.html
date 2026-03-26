@@ -17,12 +17,12 @@
         .nav-link { cursor: pointer; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em; transition: 0.3s; padding-bottom: 4px; }
         .nav-link:hover, .active-tab { color: var(--gold); border-bottom: 2px solid var(--gold); }
         .hidden-section { display: none; }
-        .category-chip { cursor: pointer; padding: 8px 18px; border-radius: 99px; border: 1px solid #e2e8f0; font-size: 0.7rem; transition: 0.3s; background: white; white-space: nowrap; font-weight: 600; }
+        .category-chip { cursor: pointer; padding: 8px 18px; border-radius: 99px; border: 1px solid #e2e8f0; font-size: 0.7rem; transition: 0.3s; background: white; white-space: nowrap; font-weight: 600; text-transform: uppercase; }
         .category-chip.active { background: #D4AF37; color: white; border-color: #D4AF37; }
         .product-card { transition: 0.4s; background: white; border-radius: 8px; overflow: hidden; border: 1px solid transparent; }
         .product-card:hover { border-color: var(--gold); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
         
-        /* Fast Shimmer Effect */
         @keyframes shimmer { 0% { opacity: 0.4; } 50% { opacity: 0.8; } 100% { opacity: 0.4; } }
         .skeleton { background: #e5e5e5; animation: shimmer 1.2s infinite ease-in-out; border-radius: 8px; }
     </style>
@@ -44,30 +44,30 @@
     </nav>
 
     <section id="page-home" class="content-section">
-        <div class="relative h-[70vh] flex items-center justify-center overflow-hidden">
+        <div class="relative h-[75vh] flex items-center justify-center overflow-hidden">
             <img src="hero1.jpg" class="absolute inset-0 w-full h-full object-cover">
             <div class="absolute inset-0 bg-black/30"></div>
             <div class="relative z-10 text-center text-white px-6">
-                <h2 class="text-5xl md:text-6xl mb-4 font-light">The Golden Heritage</h2>
-                <button onclick="showPage('collection')" class="px-10 py-3 border border-white hover:bg-white hover:text-black transition-all uppercase tracking-widest text-xs">View Collection</button>
+                <h2 class="text-5xl md:text-7xl mb-4 font-light">The Golden Heritage</h2>
+                <button onclick="showPage('collection')" class="px-12 py-4 border border-white hover:bg-white hover:text-black transition-all uppercase tracking-widest text-xs">View Collection</button>
             </div>
         </div>
 
-        <section class="py-16 px-6 bg-white">
+        <section class="py-20 px-6 bg-white">
             <div class="max-w-4xl mx-auto text-center">
-                <h2 class="text-3xl brand-font text-[#D4AF37] mb-4">Our Story</h2>
-                <div class="w-12 h-[1px] bg-[#D4AF37] mx-auto mb-8"></div>
-                <p class="text-gray-600 leading-relaxed font-light mb-6">
-                    Welcome to <span class="font-semibold text-gray-800">Shree Siddh Kala Alankar</span>, based in the historic city of Nashik. Specializing in 100% handcrafted jewelry, founded by <span class="font-medium">Sheetal Gadekar</span> and managed by <span class="font-medium">Siddhesh Gadekar</span>.
+                <h2 class="text-3xl brand-font text-[#D4AF37] mb-6">Our Story</h2>
+                <div class="w-16 h-[1px] bg-[#D4AF37] mx-auto mb-10"></div>
+                <p class="text-gray-600 leading-relaxed font-light mb-8">
+                    Welcome to <span class="font-semibold text-gray-800">Shree Siddh Kala Alankar</span>, Nashik. Specialized in 100% handcrafted jewelry, founded by <span class="font-medium text-gray-900">Sheetal Gadekar</span> and managed by <span class="font-medium text-gray-900">Siddhesh Gadekar</span>.
                 </p>
-                <div class="grid md:grid-cols-2 gap-6 text-sm">
-                    <div class="p-4 bg-[#FCFBF4] border border-gray-100 rounded">
-                        <h4 class="font-bold text-[#D4AF37] uppercase text-[10px] mb-1">Location</h4>
+                <div class="grid md:grid-cols-2 gap-8 text-sm">
+                    <div class="p-6 bg-[#FCFBF4] border border-gray-100 rounded-lg">
+                        <h4 class="font-bold text-[#D4AF37] uppercase tracking-widest mb-2">Location</h4>
                         <p class="text-gray-800">Nashik, Maharashtra</p>
                     </div>
-                    <div class="p-4 bg-[#FCFBF4] border border-gray-100 rounded">
-                        <h4 class="font-bold text-[#D4AF37] uppercase text-[10px] mb-1">Contact</h4>
-                        <p class="text-gray-800">+91 8208059509 | 8208069292</p>
+                    <div class="p-6 bg-[#FCFBF4] border border-gray-100 rounded-lg">
+                        <h4 class="font-bold text-[#D4AF37] uppercase tracking-widest mb-2">Contact</h4>
+                        <p class="text-gray-800 font-medium">+91 8208059509 | 8208069292</p>
                     </div>
                 </div>
             </div>
@@ -75,37 +75,68 @@
     </section>
 
     <section id="page-collection" class="content-section hidden-section py-12 px-6 max-w-7xl mx-auto">
-        <div id="filterBar" class="flex overflow-x-auto pb-8 mb-4 gap-3 no-scrollbar">
+        <div class="text-center mb-10">
+            <h2 class="text-4xl brand-font">Our Masterpieces</h2>
+        </div>
+
+        <div class="flex overflow-x-auto pb-8 mb-8 gap-3 no-scrollbar justify-start lg:justify-center">
             <div class="category-chip active" onclick="filterCategory('All', this)">All</div>
             <div class="category-chip" onclick="filterCategory('Mangal Sutra Long', this)">Mangal Sutra Long</div>
+            <div class="category-chip" onclick="filterCategory('Mangal Sutra Short', this)">Mangal Sutra Short</div>
             <div class="category-chip" onclick="filterCategory('Necklaces', this)">Necklaces</div>
+            <div class="category-chip" onclick="filterCategory('Invisible Necklaces', this)">Invisible Necklaces</div>
+            <div class="category-chip" onclick="filterCategory('Premium Necklaces', this)">Premium Necklaces</div>
+            <div class="category-chip" onclick="filterCategory('Sari', this)">Sari</div>
             <div class="category-chip" onclick="filterCategory('Bangles', this)">Bangles</div>
+            <div class="category-chip" onclick="filterCategory('Rings', this)">Rings</div>
+            <div class="category-chip" onclick="filterCategory('Earrings', this)">Earrings</div>
+            <div class="category-chip" onclick="filterCategory('Earcuffs', this)">Earcuffs</div>
             <div class="category-chip" onclick="filterCategory('Nath', this)">Nath</div>
+            <div class="category-chip" onclick="filterCategory('Bugdi', this)">Bugdi</div>
+        </div>
+
+        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             </div>
-        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
     </section>
 
     <section id="page-admin" class="content-section hidden-section py-20 px-6">
-        <div class="max-w-md mx-auto bg-white p-8 shadow-xl rounded border-t-4 border-[#D4AF37]">
-            <h2 class="text-xl mb-6 text-center brand-font font-bold">Admin Dashboard</h2>
+        <div class="max-w-xl mx-auto bg-white p-10 shadow-2xl rounded border-t-4 border-[#D4AF37]">
+            <h2 class="text-2xl mb-8 text-center brand-font font-bold">Admin Panel</h2>
             <div class="space-y-4">
-                <input type="text" id="pName" placeholder="Product Name" class="w-full p-3 border rounded">
-                <input type="text" id="pCategory" placeholder="Category" class="w-full p-3 border rounded">
-                <input type="number" id="pPrice" placeholder="Price" class="w-full p-3 border rounded">
+                <input type="text" id="pName" placeholder="Product Name" class="w-full p-4 border rounded">
+                <select id="pCategory" class="w-full p-4 border rounded bg-white">
+                    <option value="Mangal Sutra Long">Mangal Sutra Long</option>
+                    <option value="Mangal Sutra Short">Mangal Sutra Short</option>
+                    <option value="Necklaces">Necklaces</option>
+                    <option value="Invisible Necklaces">Invisible Necklaces</option>
+                    <option value="Premium Necklaces">Premium Necklaces</option>
+                    <option value="Sari">Sari</option>
+                    <option value="Bangles">Bangles</option>
+                    <option value="Rings">Rings</option>
+                    <option value="Earrings">Earrings</option>
+                    <option value="Earcuffs">Earcuffs</option>
+                    <option value="Nath">Nath</option>
+                    <option value="Bugdi">Bugdi</option>
+                </select>
+                <input type="number" id="pPrice" placeholder="Price" class="w-full p-4 border rounded">
+                <textarea id="pDesc" placeholder="Description" class="w-full p-4 border rounded h-24"></textarea>
                 <input type="file" id="pImage" accept="image/*" class="text-xs">
-                <button onclick="uploadToFirebase()" id="uploadBtn" class="w-full gold-gradient text-white py-3 rounded font-bold uppercase">Save Product</button>
+                <button onclick="uploadToFirebase()" id="uploadBtn" class="w-full gold-gradient text-white py-4 font-bold rounded uppercase">Save Product</button>
+                <button onclick="logoutAdmin()" class="w-full text-xs text-gray-400 mt-6 underline">Logout</button>
             </div>
         </div>
     </section>
 
-    <div id="productModal" class="hidden fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4">
-        <div class="bg-white max-w-4xl w-full flex flex-col md:flex-row overflow-hidden relative rounded shadow-2xl">
-            <button onclick="closeModal()" class="absolute top-4 right-4 text-2xl z-10">&times;</button>
-            <div class="md:w-1/2 bg-gray-100"><img id="modalImg" src="" class="w-full h-full object-contain"></div>
-            <div class="md:w-1/2 p-8 text-center flex flex-col justify-center">
-                <h2 id="modalName" class="text-2xl brand-font font-bold mb-2"></h2>
-                <p id="modalPrice" class="text-xl text-[#D4AF37] mb-6"></p>
-                <button id="whatsappBtn" class="w-full bg-[#25D366] text-white py-4 rounded-full font-bold uppercase">WhatsApp Inquiry</button>
+    <div id="productModal" class="hidden fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4">
+        <div class="bg-white max-w-5xl w-full flex flex-col md:flex-row overflow-hidden relative rounded max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal()" class="absolute top-5 right-5 text-3xl">&times;</button>
+            <div class="md:w-1/2 bg-gray-50"><img id="modalImg" src="" class="w-full h-full object-contain p-6"></div>
+            <div class="md:w-1/2 p-10 text-center flex flex-col justify-center">
+                <div id="modalCat" class="text-[10px] text-[#D4AF37] font-bold uppercase mb-2"></div>
+                <h2 id="modalName" class="text-3xl brand-font font-bold mb-2"></h2>
+                <p id="modalPrice" class="text-2xl mb-6 font-semibold"></p>
+                <p id="modalDesc" class="text-gray-500 mb-10 font-light leading-relaxed"></p>
+                <button id="whatsappBtn" class="w-full bg-[#25D366] text-white py-5 rounded-full font-bold uppercase shadow-lg">Inquire on WhatsApp</button>
             </div>
         </div>
     </div>
@@ -129,7 +160,7 @@
 
         function showSkeletons() {
             const grid = document.getElementById('productGrid');
-            grid.innerHTML = Array(4).fill(`<div class="p-4"><div class="skeleton h-64 mb-4"></div><div class="skeleton h-4 w-3/4"></div></div>`).join('');
+            grid.innerHTML = Array(8).fill(`<div class="p-4"><div class="skeleton h-64 mb-4"></div><div class="skeleton h-3 w-1/4 mb-2"></div><div class="skeleton h-5 w-3/4"></div></div>`).join('');
         }
 
         function loadProducts() {
@@ -146,24 +177,30 @@
             grid.innerHTML = '';
             filtered.forEach(p => {
                 grid.innerHTML += `
-                    <div class="product-card p-4 cursor-pointer" onclick="openModal('${p.name}', '${p.price}', '${p.image}')">
-                        <div class="h-60 overflow-hidden mb-3 bg-gray-50 rounded">
+                    <div class="product-card p-4 cursor-pointer" onclick="openModal('${p.name}', '${p.price}', '${p.image}', '${p.category}', '${p.desc || ''}')">
+                        <div class="h-64 overflow-hidden mb-4 bg-gray-50 rounded">
                             <img src="${p.image}" class="w-full h-full object-cover" loading="lazy">
                         </div>
-                        <h4 class="brand-font text-sm font-bold text-gray-800">${p.name}</h4>
-                        <p class="text-xs font-semibold text-[#D4AF37]">₹${p.price}</p>
+                        <div class="text-[9px] text-[#D4AF37] font-bold uppercase mb-1">${p.category}</div>
+                        <h4 class="brand-font text-md font-bold text-gray-800">${p.name}</h4>
+                        <p class="text-sm font-semibold">₹${p.price}</p>
+                        ${isAdmin() ? `<button onclick="event.stopPropagation(); deleteProduct('${p.id}')" class="text-xs text-red-500 mt-4 underline">Delete</button>` : ''}
                     </div>`;
             });
         }
 
         function showPage(id) {
             if(id === 'admin' && !isAdmin()) {
-                if(prompt("Admin Password:") === "nashik123") localStorage.setItem('isSiddhAdmin', 'true');
-                else return;
+                if(prompt("Admin Password:") === "nashik123") {
+                    localStorage.setItem('isSiddhAdmin', 'true');
+                    document.getElementById('link-admin').style.display = 'inline-block';
+                } else return;
             }
             document.querySelectorAll('.content-section').forEach(s => s.classList.add('hidden-section'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-tab'));
             document.getElementById('page-'+id).classList.remove('hidden-section');
-            if(id === 'collection') loadProducts();
+            document.getElementById('link-'+id).classList.add('active-tab');
+            if(id === 'collection' || id === 'admin') loadProducts();
         }
 
         function filterCategory(cat, el) {
@@ -177,10 +214,11 @@
             const name = document.getElementById('pName').value;
             const cat = document.getElementById('pCategory').value;
             const price = document.getElementById('pPrice').value;
+            const desc = document.getElementById('pDesc').value;
             const file = document.getElementById('pImage').files[0];
             const btn = document.getElementById('uploadBtn');
-            if(!name || !file) return;
-            btn.innerText = "Compressing..."; btn.disabled = true;
+            if(!name || !file) return alert("Please fill Name and Image");
+            btn.innerText = "Processing..."; btn.disabled = true;
             
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -190,25 +228,31 @@
                 img.onload = async () => {
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
-                    const scale = 800 / img.width;
-                    canvas.width = 800; canvas.height = img.height * scale;
+                    const MAX_W = 1000;
+                    const scale = MAX_W / img.width;
+                    canvas.width = MAX_W; canvas.height = img.height * scale;
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    const compressed = canvas.toDataURL('image/jpeg', 0.6);
-                    await db.collection('products').add({ name, category: cat, price, image: compressed, createdAt: Date.now() });
-                    alert("Added!"); location.reload();
+                    const compressed = canvas.toDataURL('image/jpeg', 0.7);
+                    await db.collection('products').add({ name, category: cat, price, desc, image: compressed, createdAt: Date.now() });
+                    alert("Added Successfully!"); location.reload();
                 };
             };
         }
 
-        function openModal(name, price, img) {
+        async function deleteProduct(id) { if(confirm("Delete this product?")) await db.collection('products').doc(id).delete(); }
+
+        function openModal(name, price, img, cat, desc) {
             document.getElementById('modalImg').src = img;
+            document.getElementById('modalCat').innerText = cat;
             document.getElementById('modalName').innerText = name;
             document.getElementById('modalPrice').innerText = '₹' + price;
-            document.getElementById('whatsappBtn').onclick = () => window.open(`https://wa.me/918208059509?text=Inquiry: ${name}`, '_blank');
+            document.getElementById('modalDesc').innerText = desc || "Handcrafted with traditional elegance.";
+            document.getElementById('whatsappBtn').onclick = () => window.open(`https://wa.me/918208059509?text=Inquiry for ${name} (${cat})`, '_blank');
             document.getElementById('productModal').classList.remove('hidden');
         }
 
         function closeModal() { document.getElementById('productModal').classList.add('hidden'); }
+        function logoutAdmin() { localStorage.removeItem('isSiddhAdmin'); location.reload(); }
 
         window.onload = () => { if(isAdmin()) document.getElementById('link-admin').style.display = 'inline-block'; loadProducts(); };
     </script>
