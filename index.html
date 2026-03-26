@@ -23,6 +23,21 @@
         .product-card { transition: 0.4s; border: 1px solid transparent; background: white; border-radius: 8px; overflow: hidden; }
         .product-card:hover { border-color: var(--gold); transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        /* Skeleton Animation */
+        @keyframes shimmer {
+            0% { background-position: -468px 0; }
+            100% { background-position: 468px 0; }
+        }
+        .skeleton {
+            background: #f6f7f8;
+            background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+            background-repeat: no-repeat;
+            background-size: 800px 104px;
+            display: inline-block;
+            position: relative;
+            animation: shimmer 1.2s infinite linear;
+        }
     </style>
 </head>
 <body>
@@ -56,10 +71,9 @@
             <div class="max-w-4xl mx-auto text-center">
                 <h2 class="text-3xl md:text-4xl mb-6 brand-font text-[#D4AF37]">Our Story</h2>
                 <div class="w-16 h-[1px] bg-[#D4AF37] mx-auto mb-10"></div>
-                
                 <div class="space-y-6 text-gray-600 leading-relaxed font-light">
-                    <p> Welcome to <span class="font-semibold text-gray-800">Shree Siddh Kala Alankar</span>, where we breathe life into the timeless traditions of Maharashtrian heritage. Based in the historic city of Nashik, we specialize in the meticulous creation of 100% handcrafted jewelry that captures the royal essence of our culture.</p>
-                    <p> Founded and curated by <span class="font-medium text-gray-800">Sheetal Gadekar</span> and managed by <span class="font-medium text-gray-800">Siddhesh Gadekar</span>, our collection is more than just ornament—it is a tribute to the craftsmanship passed down through generations. From the intricate detail of a Peshwai Nath to the graceful strength of a Mangalsutra, every piece is crafted with passion, precision, and the finest materials.</p>
+                    <p> Welcome to <span class="font-semibold text-gray-800">Shree Siddh Kala Alankar</span>, where we breathe life into the timeless traditions of Maharashtrian heritage.</p>
+                    <p> Founded and curated by <span class="font-medium text-gray-800">Sheetal Gadekar</span> and managed by <span class="font-medium text-gray-800">Siddhesh Gadekar</span>.</p>
                     
                     <div class="pt-10 grid md:grid-cols-2 gap-8 text-sm">
                         <div class="p-6 bg-[#FCFBF4] rounded-lg border border-gray-100 flex flex-col items-center justify-center">
@@ -68,9 +82,7 @@
                         </div>
                         <div class="p-6 bg-[#FCFBF4] rounded-lg border border-gray-100 flex flex-col items-center justify-center">
                             <h4 class="font-bold text-[#D4AF37] mb-2 uppercase tracking-widest">Connect With Us</h4>
-                            <p>Call or WhatsApp:</p>
                             <p class="font-bold text-gray-800 mt-1 tracking-wider">+91 8208059509</p>
-                            <p class="font-bold text-gray-800 tracking-wider">+91 8208069292</p>
                         </div>
                     </div>
                 </div>
@@ -98,7 +110,8 @@
             <div class="category-chip" onclick="filterCategory('Nath', this)">Nath</div>
             <div class="category-chip" onclick="filterCategory('Bugdi', this)">Bugdi</div>
         </div>
-        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"></div>
+        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            </div>
     </section>
 
     <section id="page-admin" class="content-section hidden-section py-20 px-6">
@@ -125,7 +138,7 @@
                 <textarea id="pDesc" placeholder="Product Description" class="w-full p-4 border rounded h-24 outline-none"></textarea>
                 
                 <div id="imageInputGroup">
-                    <p class="text-[10px] text-gray-400 mb-1">Upload Image (Only for New Products)</p>
+                    <p class="text-[10px] text-gray-400 mb-1">Upload Image</p>
                     <input type="file" id="pImage" accept="image/*" class="text-xs mx-auto">
                 </div>
 
@@ -134,7 +147,6 @@
                     <button onclick="updateProduct()" id="updateBtn" class="hidden w-full bg-blue-600 text-white py-4 font-bold rounded shadow-lg uppercase tracking-widest">Update Product</button>
                 </div>
                 <button id="cancelEdit" onclick="resetAdminForm()" class="hidden w-full text-xs text-red-500 mt-2 underline">Cancel Edit Mode</button>
-                
                 <button onclick="logoutAdmin()" class="w-full text-xs text-gray-400 mt-10 underline">Logout & Exit Admin</button>
             </div>
         </div>
@@ -158,7 +170,6 @@
         <div class="max-w-7xl mx-auto">
             <h3 class="brand-font text-lg text-[#D4AF37] mb-2 uppercase">Shree Siddh Kala Alankar</h3>
             <p class="text-gray-400 text-[10px] tracking-[0.4em] mb-8">NASHIK | MAHARASHTRA</p>
-            <div class="w-12 h-[1px] bg-gray-200 mx-auto mb-8"></div>
             <p onclick="showPage('admin')" class="text-[10px] text-gray-300 cursor-default select-none tracking-widest">
                 © 2025 SHREE SIDDH KALA ALANKAR. ALL RIGHTS RESERVED.
             </p>
@@ -183,6 +194,22 @@
         const db = firebase.firestore();
 
         function isAdmin() { return localStorage.getItem('isSiddhAdmin') === 'true'; }
+
+        // 1. IMPROVED LOADING: SHOW SKELETONS IMMEDIATELY
+        function showSkeletons() {
+            const grid = document.getElementById('productGrid');
+            if (!grid || grid.innerHTML !== '') return; 
+            let skeletons = '';
+            for (let i = 0; i < 4; i++) {
+                skeletons += `
+                    <div class="p-4">
+                        <div class="skeleton w-full h-64 rounded mb-4"></div>
+                        <div class="skeleton w-1/4 h-3 mb-2"></div>
+                        <div class="skeleton w-3/4 h-5"></div>
+                    </div>`;
+            }
+            grid.innerHTML = skeletons;
+        }
 
         function showPage(id) {
             if(id === 'admin' && !isAdmin()) {
@@ -211,7 +238,56 @@
             renderProducts();
         }
 
-        // --- EDIT LOGIC ---
+        // 2. SMART CACHING & INSTANT RENDER
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            if (!grid) return;
+
+            showSkeletons();
+
+            // Check Cache for instant display
+            const cachedData = localStorage.getItem('ssk_cache');
+            if (cachedData && currentFilter === 'All') {
+                const products = JSON.parse(cachedData);
+                displayProducts(products);
+            }
+
+            // Real-time Background Update
+            db.collection('products').orderBy('createdAt', 'desc').onSnapshot(snap => {
+                const products = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                localStorage.setItem('ssk_cache', JSON.stringify(products)); // Update cache
+                
+                const filtered = currentFilter === 'All' ? products : products.filter(p => p.category === currentFilter);
+                displayProducts(filtered);
+            });
+        }
+
+        function displayProducts(products) {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+            products.forEach(p => {
+                const card = document.createElement('div');
+                card.className = "product-card p-4 cursor-pointer";
+                card.onclick = () => openModal(p.id, p.name, p.price, p.desc, p.image, p.category);
+                card.innerHTML = `
+                    <div class="h-64 overflow-hidden mb-4 bg-gray-50 rounded">
+                        <img src="${p.image}" class="w-full h-full object-cover" loading="lazy">
+                    </div>
+                    <div class="text-[9px] text-[#D4AF37] uppercase font-bold tracking-widest mb-1">${p.category}</div>
+                    <h4 class="brand-font text-md font-bold text-gray-800">${p.name}</h4>
+                    <p class="text-sm font-semibold">₹${p.price}</p>
+                    ${isAdmin() ? `
+                        <div class="grid grid-cols-2 gap-2 mt-4">
+                            <button onclick="event.stopPropagation(); editProduct('${p.id}')" class="py-2 text-[10px] bg-blue-50 text-blue-600 rounded uppercase font-bold">Edit</button>
+                            <button onclick="event.stopPropagation(); deleteProduct('${p.id}')" class="py-2 text-[10px] bg-red-50 text-red-500 rounded uppercase font-bold">Remove</button>
+                        </div>
+                    ` : ''}
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- ADMIN FUNCTIONS ---
         async function editProduct(id) {
             const doc = await db.collection('products').doc(id).get();
             const p = doc.data();
@@ -262,6 +338,7 @@
             const btn = document.getElementById('uploadBtn');
             if(!name || !category || !price || !file) return alert("Fill all details.");
             btn.innerText = "COMPRESSING..."; btn.disabled = true;
+            
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = function(e) {
@@ -278,38 +355,10 @@
                     const compressed = canvas.toDataURL('image/jpeg', 0.7);
                     try {
                         await db.collection('products').add({ name, category, price, desc, image: compressed, createdAt: Date.now() });
-                        alert("Added Successfully!"); location.reload();
+                        alert("Added Successfully!"); renderProducts(); resetAdminForm();
                     } catch (err) { alert(err.message); btn.innerText = "SAVE PRODUCT"; btn.disabled = false; }
                 };
             };
-        }
-
-        function renderProducts() {
-            db.collection('products').orderBy('createdAt', 'desc').onSnapshot(snap => {
-                const grid = document.getElementById('productGrid');
-                if (!grid) return;
-                let filteredDocs = currentFilter === 'All' ? snap.docs : snap.docs.filter(d => d.data().category === currentFilter);
-                grid.innerHTML = '';
-                filteredDocs.forEach(doc => {
-                    const p = doc.data();
-                    const card = document.createElement('div');
-                    card.className = "product-card p-4 cursor-pointer";
-                    card.onclick = () => openModal(doc.id, p.name, p.price, p.desc, p.image, p.category);
-                    card.innerHTML = `
-                        <div class="h-64 overflow-hidden mb-4 bg-gray-50 rounded"><img src="${p.image}" class="w-full h-full object-cover"></div>
-                        <div class="text-[9px] text-[#D4AF37] uppercase font-bold tracking-widest mb-1">${p.category}</div>
-                        <h4 class="brand-font text-md font-bold text-gray-800">${p.name}</h4>
-                        <p class="text-sm font-semibold">₹${p.price}</p>
-                        ${isAdmin() ? `
-                            <div class="grid grid-cols-2 gap-2 mt-4">
-                                <button onclick="event.stopPropagation(); editProduct('${doc.id}')" class="py-2 text-[10px] bg-blue-50 text-blue-600 rounded uppercase font-bold">Edit</button>
-                                <button onclick="event.stopPropagation(); deleteProduct('${doc.id}')" class="py-2 text-[10px] bg-red-50 text-red-500 rounded uppercase font-bold">Remove</button>
-                            </div>
-                        ` : ''}
-                    `;
-                    grid.appendChild(card);
-                });
-            });
         }
 
         async function deleteProduct(id) { if(confirm("Delete product?")) await db.collection('products').doc(id).delete(); }
